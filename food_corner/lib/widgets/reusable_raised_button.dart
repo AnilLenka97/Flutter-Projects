@@ -7,19 +7,16 @@ class ReusableRaisedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 7, horizontal: 20),
-      child: RaisedButton(
-        elevation: 8,
-        child: Text(
-          buttonTitle,
-          style: TextStyle(fontSize: 20),
-        ),
-        color: Colors.green,
-        textColor: Colors.white,
-        padding: EdgeInsets.all(10),
-        onPressed: onPressed,
+    return RaisedButton(
+      elevation: 8,
+      child: Text(
+        buttonTitle,
+        style: TextStyle(fontSize: 20),
       ),
+      color: Color(0xFF007435),
+      textColor: Colors.white,
+      padding: EdgeInsets.all(10),
+      onPressed: onPressed,
     );
   }
 }
