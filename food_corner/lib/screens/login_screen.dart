@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../widgets/login_form.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,6 +12,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _auth = FirebaseAuth.instance;
+  var _isLoading = false;
 
   void _submitForm(
     String email,
@@ -21,6 +23,10 @@ class _LoginScreenState extends State<LoginScreen> {
     UserCredential userCredential;
 
     try {
+      setState(() {
+        _isLoading = true;
+      });
+
       if (isLogin) {
         userCredential = await _auth.signInWithEmailAndPassword(
             email: email, password: password);
@@ -46,6 +52,9 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Theme.of(ctx).errorColor,
         ),
       );
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -53,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      body: LoginForm(_submitForm),
+      body: LoginForm(_submitForm, _isLoading),
     );
   }
 }

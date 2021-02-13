@@ -4,7 +4,8 @@ import '../screens/food_item_screen.dart';
 import 'reusable_raised_button.dart';
 
 class LoginForm extends StatefulWidget {
-  LoginForm(this.submitFn);
+  LoginForm(this.submitFn, this.isLoading);
+  final bool isLoading;
   final void Function(
     String email,
     String password,
@@ -47,8 +48,6 @@ class _LoginFormState extends State<LoginForm> {
           child: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Flexible(
@@ -106,30 +105,37 @@ class _LoginFormState extends State<LoginForm> {
                 SizedBox(
                   height: 20,
                 ),
-                ReusableRaisedButton(
-                  buttonTitle: _isLogin ? 'Login' : 'Register',
-                  onPressed: () {
-                    _trySubmit();
-                    //Navigator.pushNamed(context, FoodItemScreen.id);
-                  },
-                ),
+                if (widget.isLoading)
+                  CircularProgressIndicator(
+                    backgroundColor: Colors.white38,
+                    strokeWidth: 3,
+                  ),
+                if (!widget.isLoading)
+                  ReusableRaisedButton(
+                    buttonTitle: _isLogin ? 'Login' : 'Register',
+                    onPressed: () {
+                      _trySubmit();
+                      //Navigator.pushNamed(context, FoodItemScreen.id);
+                    },
+                  ),
                 SizedBox(
                   height: 20,
                 ),
-                FlatButton(
-                  onPressed: () {
-                    setState(() {
-                      _isLogin = !_isLogin;
-                    });
-                    //Navigator.pushNamed(context, RegistrationScreen.id);
-                  },
-                  child: Text(
-                    _isLogin ? 'Register here' : 'I have an account',
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
+                if (!widget.isLoading)
+                  FlatButton(
+                    onPressed: () {
+                      setState(() {
+                        _isLogin = !_isLogin;
+                      });
+                      //Navigator.pushNamed(context, RegistrationScreen.id);
+                    },
+                    child: Text(
+                      _isLogin ? 'Register here' : 'I have an account',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
