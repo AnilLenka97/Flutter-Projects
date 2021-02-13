@@ -3,8 +3,11 @@ import 'package:food_corner/screens/food_item_screen.dart';
 import 'package:food_corner/screens/login_screen.dart';
 import 'package:food_corner/screens/registration_screen.dart';
 import 'screens/welcome_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 

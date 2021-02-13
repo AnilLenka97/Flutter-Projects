@@ -4,6 +4,13 @@ import '../screens/food_item_screen.dart';
 import 'reusable_raised_button.dart';
 
 class LoginForm extends StatefulWidget {
+  LoginForm(this.submitFn);
+  final void Function(
+    String email,
+    String password,
+    bool isLogin,
+    BuildContext ctx,
+  ) submitFn;
   @override
   _LoginFormState createState() => _LoginFormState();
 }
@@ -19,6 +26,13 @@ class _LoginFormState extends State<LoginForm> {
     FocusScope.of(context).unfocus();
     if (isValid) {
       _formKey.currentState.save();
+
+      widget.submitFn(
+        _userEmail.trim(),
+        _userPassword.trim(),
+        _isLogin,
+        context,
+      );
     }
   }
 
