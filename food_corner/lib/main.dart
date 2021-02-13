@@ -16,6 +16,9 @@ class MyApp extends StatelessWidget {
       title: 'FOOD CORNER',
       theme: ThemeData(
         primarySwatch: Colors.green,
+        backgroundColor: Color(0xFFC5D1CE),
+        accentColor: Colors.greenAccent,
+        accentColorBrightness: Brightness.dark,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       initialRoute: WelcomeScreen.id,

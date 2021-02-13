@@ -9,7 +9,7 @@ class FoodItemScreen extends StatelessWidget {
         title: Text('Food Corner'),
         elevation: 5,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).backgroundColor,
       body: Center(
         child: Text('Food items will be shown here.'),
       ),
