@@ -58,7 +58,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 name = value;
               },
               decoration:
-                  kTextFieldDecoration.copyWith(hintText: 'Enter your n1ame'),
+                  kTextFieldDecoration.copyWith(hintText: 'Enter your name'),
             ),
             SizedBox(
               height: 12,

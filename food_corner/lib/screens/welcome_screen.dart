@@ -4,7 +4,7 @@ import 'registration_screen.dart';
 import 'login_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  static const String id = 'welcome_screen';
+  static const String id = 'WelcomeScreen';
 
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();

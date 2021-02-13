@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_corner/screens/food_item_screen.dart';
 import 'package:food_corner/widgets/reusable_raised_button.dart';
 import '../constants.dart';
 
@@ -64,7 +65,9 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             ReusableRaisedButton(
               buttonTitle: 'Login',
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, FoodItemScreen.id);
+              },
             ),
           ],
         ),
