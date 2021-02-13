@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_corner/screens/food_item_screen.dart';
 import 'package:food_corner/screens/login_screen.dart';
@@ -24,7 +25,15 @@ class MyApp extends StatelessWidget {
         accentColorBrightness: Brightness.dark,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: WelcomeScreen.id,
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, userSnapshot) {
+          if (userSnapshot.hasData) {
+            return FoodItemScreen();
+          }
+          return LoginScreen();
+        },
+      ),
       routes: {
         WelcomeScreen.id: (context) => WelcomeScreen(),
         RegistrationScreen.id: (context) => RegistrationScreen(),
