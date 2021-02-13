@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "817773751921",
+    "project_id": "food-corner-fd2a8",
+    "storage_bucket": "food-corner-fd2a8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817773751921:android:a9bfcb1c0cdfa3cc9ef5d0",
+        "android_client_info": {
+          "package_name": "anillenka.food_corner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "817773751921-guhfm7cibpsks25l2na8i587gahkp7om.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPheL1WOyvRsSTUbAgKjtywRUVfVewRQA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "817773751921-guhfm7cibpsks25l2na8i587gahkp7om.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
