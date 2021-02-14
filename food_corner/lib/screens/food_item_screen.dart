@@ -48,7 +48,7 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
         ),
         drawer: DrawerWidget(
           userEmail: userEmail,
-          userName: userEmail,
+          userName: userName,
           onTapOnLogout: () {
             FirebaseAuth.instance.signOut();
           },

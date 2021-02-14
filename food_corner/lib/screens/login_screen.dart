@@ -32,14 +32,14 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         userCredential = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
-      }
 
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userCredential.user.uid)
-          .set({
-        'email': email,
-      });
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCredential.user.uid)
+            .set({
+          'email': email,
+        });
+      }
     } catch (err) {
       var message = 'An error occurred, please check your credentials!';
       if (err.message != null) {
