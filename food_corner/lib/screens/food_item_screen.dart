@@ -54,8 +54,21 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
           },
         ),
         backgroundColor: Theme.of(context).backgroundColor,
-        body: Center(
-          child: Text('Food items will be shown here.'),
+        body: StreamBuilder(
+          stream:
+              FirebaseFirestore.instance.collection('food-items').snapshots(),
+          builder: (ctx, foodSnapshots) {
+            if (foodSnapshots.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            final foodDocs = foodSnapshots.data.docs;
+            return ListView.builder(
+              itemCount: foodDocs.length,
+              itemBuilder: (ctx, index) => Text(foodDocs[index]['name']),
+            );
+          },
         ),
       );
   }
