@@ -1,75 +1,62 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../widgets/drawer_widget.dart';
 
-class FoodItemScreen extends StatelessWidget {
+class FoodItemScreen extends StatefulWidget {
   static const String id = 'FoodItemScreen';
+
+  @override
+  _FoodItemScreenState createState() => _FoodItemScreenState();
+}
+
+class _FoodItemScreenState extends State<FoodItemScreen> {
+  final _auth = FirebaseAuth.instance;
+
+  var _isLoading = true;
+  String userEmail;
+  String userName;
+  String userId;
+
+  _FoodItemScreenState() {
+    User user = _auth.currentUser;
+    userEmail = user.email;
+    userId = user.uid;
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .get()
+        .then((value) {
+      userName = value.data()['name'];
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Food Corner'),
-        elevation: 5,
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            Container(
-              height: 96.0,
-              child: DrawerHeader(
-                padding: EdgeInsets.only(left: 10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'John Doe',
-                      style: TextStyle(
-                        fontSize: 25.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text(
-                      'example@gmail.com',
-                      style: TextStyle(
-                        color: Colors.white60,
-                        fontSize: 15.0,
-                      ),
-                    ),
-                  ],
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                ),
-              ),
-            ),
-            ListTile(
-              dense: true,
-              leading: Icon(Icons.exit_to_app),
-              title: Text(
-                'Logout',
-                style: TextStyle(
-                  fontSize: 20,
-                ),
-              ),
-              onTap: () {
-                FirebaseAuth.instance.signOut();
-              },
-            ),
-            ListTile(
-              title: Text('Item 2'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-              },
-            ),
-          ],
+    if (_isLoading)
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    else
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Food Corner'),
+          elevation: 5,
         ),
-      ),
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: Center(
-        child: Text('Food items will be shown here.'),
-      ),
-    );
+        drawer: DrawerWidget(
+          userEmail: userEmail,
+          userName: userEmail,
+          onTapOnLogout: () {
+            FirebaseAuth.instance.signOut();
+          },
+        ),
+        backgroundColor: Theme.of(context).backgroundColor,
+        body: Center(
+          child: Text('Food items will be shown here.'),
+        ),
+      );
   }
 }

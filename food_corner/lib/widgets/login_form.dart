@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:food_corner/screens/registration_screen.dart';
-import '../screens/food_item_screen.dart';
 import 'reusable_raised_button.dart';
 
 class LoginForm extends StatefulWidget {
