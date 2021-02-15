@@ -13,6 +13,9 @@ class LoginForm extends StatefulWidget {
     String password,
     bool isLogin,
     BuildContext ctx,
+    String name,
+    String floorNo,
+    int cubicalNo,
   ) submitFn;
   @override
   _LoginFormState createState() => _LoginFormState();
@@ -24,7 +27,7 @@ class _LoginFormState extends State<LoginForm> {
   String _userPassword;
   var _isLogin = true;
   String _userName;
-  String _userFloorNo = 'Select';
+  String _userFloorNo;
   int _userCubicleNo;
 
   void _trySubmit() {
@@ -33,23 +36,15 @@ class _LoginFormState extends State<LoginForm> {
     if (isValid) {
       _formKey.currentState.save();
 
-      _isLogin
-          ? widget.submitFn(
-              _userEmail.trim(),
-              _userPassword.trim(),
-              _isLogin,
-              context,
-            )
-          : widget.submitFn(
-              _userEmail.trim(),
-              _userPassword.trim(),
-              _isLogin,
-              context,
-              //
-              //     _userName.trim(),
-              //     _userFloorNo,
-              //     _userCubicleNo,
-            );
+      widget.submitFn(
+        _userEmail.trim(),
+        _userPassword.trim(),
+        _isLogin,
+        context,
+        _userName,
+        _userFloorNo,
+        _userCubicleNo,
+      );
     }
   }
 
@@ -129,10 +124,10 @@ class _LoginFormState extends State<LoginForm> {
                         ),
                       if (!_isLogin)
                         DropdownButtonFormField(
-                          value: _userCubicleNo,
+                          value: _userFloorNo,
                           onChanged: (value) {
                             setState(() {
-                              _userCubicleNo = value;
+                              _userFloorNo = value;
                             });
                           },
                           items: Floor()
@@ -158,6 +153,8 @@ class _LoginFormState extends State<LoginForm> {
                             final n = num.tryParse(value);
                             if (n == null) {
                               return '"$value" is not a valid number';
+                            } else if (n == 0) {
+                              return 'Please enter a valid cubicle number.';
                             }
                             return null;
                           },

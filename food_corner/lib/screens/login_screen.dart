@@ -18,6 +18,9 @@ class _LoginScreenState extends State<LoginScreen> {
     String password,
     bool isLogin,
     BuildContext ctx,
+    String name,
+    String floorNo,
+    int cubicalNo,
   ) async {
     UserCredential userCredential;
 
@@ -41,6 +44,9 @@ class _LoginScreenState extends State<LoginScreen> {
             .doc(userCredential.user.uid)
             .set({
           'email': email,
+          'name': name,
+          'floorNo': floorNo,
+          'cubicalNo': cubicalNo,
         });
       }
     } catch (err) {
