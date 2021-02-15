@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:food_corner/widgets/food_item_widget.dart';
 import '../widgets/drawer_widget.dart';
 
 class FoodItemScreen extends StatefulWidget {
@@ -66,7 +67,8 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
             final foodDocs = foodSnapshots.data.docs;
             return ListView.builder(
               itemCount: foodDocs.length,
-              itemBuilder: (ctx, index) => Text(foodDocs[index]['name']),
+              itemBuilder: (ctx, index) => FoodItem(),
+              //itemBuilder: (ctx, index) => Text(foodDocs[index]['name']),
             );
           },
         ),

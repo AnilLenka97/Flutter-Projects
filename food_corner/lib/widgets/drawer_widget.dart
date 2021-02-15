@@ -26,14 +26,14 @@ class DrawerWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    userName,
+                    userName ?? 'null',
                     style: TextStyle(
                       fontSize: 25.0,
                       color: Colors.white,
                     ),
                   ),
                   Text(
-                    userEmail,
+                    userEmail ?? 'null',
                     style: TextStyle(
                       color: Colors.white60,
                       fontSize: 15.0,
