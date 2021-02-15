@@ -16,7 +16,6 @@ class _FoodItemWidgetState extends State<FoodItemWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.green,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
@@ -40,11 +39,17 @@ class _FoodItemWidgetState extends State<FoodItemWidget> {
                 ),
               ),
               Positioned(
-                bottom: 20,
-                right: 10,
+                bottom: 12,
+                right: 0,
                 child: Container(
-                  width: 250,
-                  color: Colors.black54,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(10),
+                      topLeft: Radius.circular(10),
+                    ),
+                    color: Colors.black54,
+                  ),
+                  width: 230,
                   padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

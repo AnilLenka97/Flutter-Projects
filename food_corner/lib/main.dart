@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:food_corner/screens/cart_screen.dart';
 import 'package:food_corner/screens/food_item_screen.dart';
 import 'package:food_corner/screens/login_screen.dart';
+import 'package:food_corner/screens/order_screen.dart';
 import 'package:food_corner/screens/registration_screen.dart';
 import 'screens/welcome_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         LoginScreen.id: (context) => LoginScreen(),
         FoodItemScreen.id: (context) => FoodItemScreen(),
         CartScreen.id: (context) => CartScreen(),
+        OrderScreen.id: (context) => OrderScreen(),
       },
     );
   }

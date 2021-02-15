@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CartWidget extends StatefulWidget {
-  @override
-  _CartWidgetState createState() => _CartWidgetState();
-}
-
-class _CartWidgetState extends State<CartWidget> {
+class OrderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -66,34 +61,9 @@ class _CartWidgetState extends State<CartWidget> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Row(
-                    children: [
-                      RawMaterialButton(
-                        onPressed: () {},
-                        child: Icon(
-                          Icons.add,
-                          color: Colors.white,
-                        ),
-                        elevation: 5,
-                        fillColor: Colors.green,
-                        constraints:
-                            BoxConstraints.tightFor(width: 80, height: 35),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      RawMaterialButton(
-                        onPressed: () {},
-                        child: Icon(
-                          Icons.remove,
-                          color: Colors.white,
-                        ),
-                        elevation: 5,
-                        fillColor: Colors.green,
-                        constraints:
-                            BoxConstraints.tightFor(width: 80, height: 35),
-                      ),
-                    ],
+                  Text(
+                    'Ordered: 13-12-2021',
+                    style: TextStyle(color: Colors.black54),
                   ),
                 ],
               ),

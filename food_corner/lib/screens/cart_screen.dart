@@ -17,6 +17,7 @@ class _CartScreenState extends State<CartScreen> {
       appBar: AppBar(
         title: Text('My Cart'),
       ),
+      backgroundColor: Theme.of(context).backgroundColor,
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('users')
