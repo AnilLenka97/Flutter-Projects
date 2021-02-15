@@ -42,11 +42,20 @@ class _CartScreenState extends State<CartScreen> {
               }
               final cartFoodDocs = cartFoodSnapshots.data.docs;
               final foodItemDocs = foodItemSnapshots.data.docs;
+              var cartList = [];
+              for (var cartItem in cartFoodDocs) {
+                for (var foodItem in foodItemDocs) {
+                  if (cartItem.id == foodItem.id) {
+                    cartList.add(foodItem);
+                  }
+                }
+              }
               return ListView.builder(
-                itemCount: cartFoodDocs.length,
-                itemBuilder: (ctx, index) => CartWidget(),
-                // itemBuilder: (ctx, index) =>
-                //     Text(foodItemDocs[index]['noOfItems'].toString()),
+                itemCount: cartList.length,
+                itemBuilder: (ctx, index) => CartWidget(
+                  foodName: cartList[index]['title'],
+                  price: cartList[index]['price'],
+                ),
               );
             },
           );

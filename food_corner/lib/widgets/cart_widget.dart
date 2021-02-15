@@ -1,16 +1,30 @@
 import 'package:flutter/material.dart';
 
 class CartWidget extends StatefulWidget {
+  final String foodName;
+  final int price;
+  CartWidget({@required this.foodName, @required this.price});
   @override
   _CartWidgetState createState() => _CartWidgetState();
 }
 
 class _CartWidgetState extends State<CartWidget> {
+  int noOfItems = 1;
+  int foodPrice;
+  int totalPrice;
+
+  @override
+  void initState() {
+    super.initState();
+    foodPrice = widget.price;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 150,
       child: Card(
+        color: Colors.white70,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -41,9 +55,8 @@ class _CartWidgetState extends State<CartWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    'Food Item',
+                    widget.foodName,
                     style: TextStyle(
-                      color: Colors.green,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -51,27 +64,30 @@ class _CartWidgetState extends State<CartWidget> {
                     overflow: TextOverflow.fade,
                   ),
                   Text(
-                    '₹ 999',
+                    '₹ $foodPrice',
                     style: TextStyle(
                       color: Colors.green,
                       fontSize: 22,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    'No of items : 5',
+                    'No of items : $noOfItems',
                     style: TextStyle(
-                      color: Colors.green,
+                      color: Colors.black54,
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   Row(
                     children: [
                       RawMaterialButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            noOfItems -= 1;
+                            foodPrice = foodPrice - widget.price;
+                          });
+                        },
                         child: Icon(
-                          Icons.add,
+                          Icons.remove,
                           color: Colors.white,
                         ),
                         elevation: 5,
@@ -83,9 +99,14 @@ class _CartWidgetState extends State<CartWidget> {
                         width: 10,
                       ),
                       RawMaterialButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            noOfItems += 1;
+                            foodPrice = foodPrice + widget.price;
+                          });
+                        },
                         child: Icon(
-                          Icons.remove,
+                          Icons.add,
                           color: Colors.white,
                         ),
                         elevation: 5,
