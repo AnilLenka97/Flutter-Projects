@@ -83,6 +83,7 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
                 title: foodDocs[index]['title'],
                 imgPath: foodDocs[index]['imgPath'],
                 price: foodDocs[index]['price'],
+                id: foodDocs[index].id,
               ),
             );
           },

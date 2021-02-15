@@ -14,3 +14,11 @@ class DataAccessFirebase {
     return floorData.data.docs;
   }
 }
+// FirebaseFirestore.instance
+//     .collection('users')
+// .get()
+//     .then((QuerySnapshot querySnapshot) => {
+// querySnapshot.docs.forEach((doc) {
+// print(doc["first_name"]);
+// });
+// });

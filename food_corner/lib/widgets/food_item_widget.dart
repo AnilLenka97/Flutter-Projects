@@ -1,18 +1,41 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FoodItemWidget extends StatefulWidget {
   final title;
   final imgPath;
   final price;
+  final id;
   FoodItemWidget(
-      {@required this.title, @required this.imgPath, @required this.price});
+      {@required this.title,
+      @required this.imgPath,
+      @required this.price,
+      @required this.id});
   @override
   _FoodItemWidgetState createState() => _FoodItemWidgetState();
 }
 
 class _FoodItemWidgetState extends State<FoodItemWidget> {
-  var isAddedToCart = false;
-  var isClicked = false;
+  var _isAddedToCart = false;
+  var _isClicked = false;
+  var _isLoading = false;
+  final String _userId = FirebaseAuth.instance.currentUser.uid;
+  final CollectionReference _users =
+      FirebaseFirestore.instance.collection('users');
+
+  Future<void> addFoodItemToCart(itemId) {
+    return _users
+        .doc(_userId)
+        .collection('cart-items')
+        .doc(itemId)
+        .set({
+          'noOfItems': 1,
+        })
+        .then((value) => print("User Added"))
+        .catchError((error) => print("Failed to add user: $error"));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -84,14 +107,14 @@ class _FoodItemWidgetState extends State<FoodItemWidget> {
                 bottomRight: Radius.circular(10),
                 bottomLeft: Radius.circular(10),
               ),
-              color: isAddedToCart ? Colors.grey : Colors.green,
+              color: _isAddedToCart ? Colors.grey : Colors.green,
             ),
             child: RawMaterialButton(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    isAddedToCart
+                    _isAddedToCart
                         ? Icons.check_circle
                         : Icons.add_shopping_cart,
                     color: Colors.white,
@@ -100,7 +123,7 @@ class _FoodItemWidgetState extends State<FoodItemWidget> {
                     width: 5,
                   ),
                   Text(
-                    isAddedToCart ? 'added to cart' : 'add to cart',
+                    _isAddedToCart ? 'added to cart' : 'add to cart',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -108,12 +131,13 @@ class _FoodItemWidgetState extends State<FoodItemWidget> {
                   ),
                 ],
               ),
-              onPressed: isClicked
+              onPressed: _isClicked
                   ? null
                   : () {
+                      addFoodItemToCart(widget.id);
                       setState(() {
-                        isAddedToCart = true;
-                        isClicked = true;
+                        _isAddedToCart = true;
+                        _isClicked = true;
                       });
                     },
             ),
