@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:food_corner/utilities/data_access_from_firebase.dart';
 import 'reusable_raised_button.dart';
+import '../models/floor_details.dart';
 
 class LoginForm extends StatefulWidget {
   LoginForm(this.submitFn, this.isLoading);
@@ -19,6 +23,9 @@ class _LoginFormState extends State<LoginForm> {
   String _userEmail;
   String _userPassword;
   var _isLogin = true;
+  String _userName;
+  String _userFloorNo = 'Select';
+  int _userCubicleNo;
 
   void _trySubmit() {
     final isValid = _formKey.currentState.validate();
@@ -26,12 +33,23 @@ class _LoginFormState extends State<LoginForm> {
     if (isValid) {
       _formKey.currentState.save();
 
-      widget.submitFn(
-        _userEmail.trim(),
-        _userPassword.trim(),
-        _isLogin,
-        context,
-      );
+      _isLogin
+          ? widget.submitFn(
+              _userEmail.trim(),
+              _userPassword.trim(),
+              _isLogin,
+              context,
+            )
+          : widget.submitFn(
+              _userEmail.trim(),
+              _userPassword.trim(),
+              _isLogin,
+              context,
+              //
+              //     _userName.trim(),
+              //     _userFloorNo,
+              //     _userCubicleNo,
+            );
     }
   }
 
@@ -49,16 +67,13 @@ class _LoginFormState extends State<LoginForm> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Flexible(
-                  child: Hero(
-                    tag: 'logo',
-                    child: Container(
-                      child: Image(
-                        image: AssetImage(
-                            'assets/images/food_corner_logo_internal.png'),
-                      ),
-                      height: 200,
-                      padding: EdgeInsets.only(left: 20),
+                  child: Container(
+                    child: Image(
+                      image: AssetImage(
+                          'assets/images/food_corner_logo_internal.png'),
                     ),
+                    height: 200,
+                    padding: EdgeInsets.only(left: 20),
                   ),
                 ),
                 SizedBox(
@@ -97,6 +112,61 @@ class _LoginFormState extends State<LoginForm> {
                           _userPassword = value;
                         },
                       ),
+                      if (!_isLogin)
+                        TextFormField(
+                          key: ValueKey('name'),
+                          keyboardType: TextInputType.name,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please enter your name.';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(labelText: 'Name'),
+                          onSaved: (value) {
+                            _userName = value;
+                          },
+                        ),
+                      if (!_isLogin)
+                        DropdownButtonFormField(
+                          value: _userCubicleNo,
+                          onChanged: (value) {
+                            setState(() {
+                              _userCubicleNo = value;
+                            });
+                          },
+                          items: Floor()
+                              .floorInfo
+                              .map((e) => DropdownMenuItem(
+                                    child: Text(e),
+                                    value: e,
+                                  ))
+                              .toList(),
+                          hint: Text('Choose Floor'),
+                        ),
+                      if (!_isLogin)
+                        TextFormField(
+                          key: ValueKey('cubicalNo'),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please enter your cubicle number.';
+                            }
+                            final n = num.tryParse(value);
+                            if (n == null) {
+                              return '"$value" is not a valid number';
+                            }
+                            return null;
+                          },
+                          decoration:
+                              InputDecoration(labelText: 'Cubical Number'),
+                          onSaved: (value) {
+                            _userCubicleNo = num.tryParse(value);
+                          },
+                        ),
                     ],
                   ),
                 ),

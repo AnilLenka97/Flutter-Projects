@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:food_corner/models/food_item.dart';
+import 'package:food_corner/utilities/data_access_from_firebase.dart';
 import '../widgets/food_item_widget.dart';
 import '../widgets/drawer_widget.dart';
 import 'cart_screen.dart';

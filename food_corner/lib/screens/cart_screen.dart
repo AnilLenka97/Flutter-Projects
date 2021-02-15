@@ -40,10 +40,10 @@ class _CartScreenState extends State<CartScreen> {
                   child: CircularProgressIndicator(),
                 );
               }
-              final foodItemDocs = cartFoodSnapshots.data.docs;
-              final cartFoodDocs = foodItemSnapshots.data.docs;
+              final cartFoodDocs = cartFoodSnapshots.data.docs;
+              final foodItemDocs = foodItemSnapshots.data.docs;
               return ListView.builder(
-                itemCount: foodItemDocs.length,
+                itemCount: cartFoodDocs.length,
                 itemBuilder: (ctx, index) => CartWidget(),
                 // itemBuilder: (ctx, index) =>
                 //     Text(foodItemDocs[index]['noOfItems'].toString()),
