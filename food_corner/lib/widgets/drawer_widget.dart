@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_corner/screens/profile_screen.dart';
 import '../screens/cart_screen.dart';
 import '../screens/order_screen.dart';
 
@@ -68,7 +69,9 @@ class DrawerWidget extends StatelessWidget {
                 fontSize: 20,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, ProfileScreen.id);
+            },
           ),
           ListTile(
             dense: true,

@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:food_corner/utilities/data_access_from_firebase.dart';
 import 'reusable_raised_button.dart';
 import '../models/floor_details.dart';
 
