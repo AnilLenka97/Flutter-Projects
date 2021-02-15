@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/food_item.dart';
 import '../widgets/login_form.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -29,6 +30,9 @@ class _LoginScreenState extends State<LoginScreen> {
       if (isLogin) {
         userCredential = await _auth.signInWithEmailAndPassword(
             email: email, password: password);
+
+        // developing stage
+        // FoodItem().foodItemConstructor();
       } else {
         userCredential = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_corner/screens/cart_screen.dart';
 
 class DrawerWidget extends StatelessWidget {
   final userName;
@@ -88,7 +89,9 @@ class DrawerWidget extends StatelessWidget {
                 fontSize: 20,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, CartScreen.id);
+            },
           ),
           ListTile(
             dense: true,

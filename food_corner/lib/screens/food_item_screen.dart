@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:food_corner/widgets/food_item_widget.dart';
+import 'package:food_corner/models/food_item.dart';
+import '../widgets/food_item_widget.dart';
 import '../widgets/drawer_widget.dart';
+import 'cart_screen.dart';
 
 class FoodItemScreen extends StatefulWidget {
   static const String id = 'FoodItemScreen';
@@ -19,20 +21,21 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
   String userName;
   String userId;
 
-  _FoodItemScreenState() {
+  getCurrentUser() async {
     User user = _auth.currentUser;
     userEmail = user.email;
     userId = user.uid;
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .get()
-        .then((value) {
-      userName = value.data()['name'];
-      setState(() {
-        _isLoading = false;
-      });
+    var userData = await FoodItem().getUserBasedData(userId);
+    userName = userData['name'];
+    setState(() {
+      _isLoading = false;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
   }
 
   @override
@@ -49,7 +52,9 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
           actions: [
             IconButton(
               icon: Icon(Icons.shopping_cart),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, CartScreen.id);
+              },
             ),
           ],
         ),
@@ -73,8 +78,11 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
             final foodDocs = foodSnapshots.data.docs;
             return ListView.builder(
               itemCount: foodDocs.length,
-              itemBuilder: (ctx, index) => FoodItem(),
-              //itemBuilder: (ctx, index) => Text(foodDocs[index]['name']),
+              itemBuilder: (ctx, index) => FoodItemWidget(
+                title: foodDocs[index]['title'],
+                imgPath: foodDocs[index]['imgPath'],
+                price: foodDocs[index]['price'],
+              ),
             );
           },
         ),

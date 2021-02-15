@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
-class FoodItem extends StatefulWidget {
+class FoodItemWidget extends StatefulWidget {
+  final title;
+  final imgPath;
+  final price;
+  FoodItemWidget(
+      {@required this.title, @required this.imgPath, @required this.price});
   @override
-  _FoodItemState createState() => _FoodItemState();
+  _FoodItemWidgetState createState() => _FoodItemWidgetState();
 }
 
-class _FoodItemState extends State<FoodItem> {
+class _FoodItemWidgetState extends State<FoodItemWidget> {
   var isAddedToCart = false;
   var isClicked = false;
   @override
@@ -28,7 +33,7 @@ class _FoodItemState extends State<FoodItem> {
                   topRight: Radius.circular(10.0),
                 ),
                 child: Image.network(
-                  'https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8bWVhbHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80',
+                  widget.imgPath,
                   height: 250,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -45,7 +50,7 @@ class _FoodItemState extends State<FoodItem> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Food Item',
+                        widget.title,
                         style: TextStyle(
                           fontSize: 25,
                           color: Colors.white,
@@ -54,7 +59,7 @@ class _FoodItemState extends State<FoodItem> {
                         overflow: TextOverflow.fade,
                       ),
                       Text(
-                        '₹ 199',
+                        '₹ ${widget.price}',
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.white,
@@ -83,7 +88,9 @@ class _FoodItemState extends State<FoodItem> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    isAddedToCart? Icons.check_circle : Icons.add_shopping_cart,
+                    isAddedToCart
+                        ? Icons.check_circle
+                        : Icons.add_shopping_cart,
                     color: Colors.white,
                   ),
                   SizedBox(
