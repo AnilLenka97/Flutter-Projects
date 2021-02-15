@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../models/food_item.dart';
 import '../widgets/login_form.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

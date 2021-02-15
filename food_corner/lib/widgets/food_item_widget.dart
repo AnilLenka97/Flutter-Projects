@@ -73,17 +73,15 @@ class _FoodItemWidgetState extends State<FoodItemWidget> {
               ),
             ],
           ),
-          InkWell(
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(10),
-                  bottomLeft: Radius.circular(10),
-                ),
-                color: isAddedToCart ? Colors.grey : null,
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(10),
+                bottomLeft: Radius.circular(10),
               ),
-              padding: EdgeInsets.all(10),
+              color: isAddedToCart ? Colors.grey : Colors.green,
+            ),
+            child: RawMaterialButton(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -105,15 +103,15 @@ class _FoodItemWidgetState extends State<FoodItemWidget> {
                   ),
                 ],
               ),
+              onPressed: isClicked
+                  ? null
+                  : () {
+                      setState(() {
+                        isAddedToCart = true;
+                        isClicked = true;
+                      });
+                    },
             ),
-            onTap: isClicked
-                ? null
-                : () {
-                    setState(() {
-                      isAddedToCart = true;
-                      isClicked = true;
-                    });
-                  },
           ),
         ],
       ),
