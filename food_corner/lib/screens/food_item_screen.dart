@@ -46,6 +46,12 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
         appBar: AppBar(
           title: Text('Food Corner'),
           elevation: 5,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () {},
+            ),
+          ],
         ),
         drawer: DrawerWidget(
           userEmail: userEmail,
