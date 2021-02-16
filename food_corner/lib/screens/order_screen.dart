@@ -15,38 +15,56 @@ class OrderScreen extends StatelessWidget {
       ),
       backgroundColor: Theme.of(context).backgroundColor,
       body: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('users')
-              .doc(_uid)
-              .collection('order-history')
-              .snapshots(),
-          builder: (context, orderSnapshots) {
-            if (orderSnapshots.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            return StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('food-items')
-                    .snapshots(),
-                builder: (ctx, foodItemSnapshots) {
-                  if (foodItemSnapshots.connectionState ==
-                      ConnectionState.waiting) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
+        stream: FirebaseFirestore.instance
+            .collection('users')
+            .doc(_uid)
+            .collection('order-history')
+            .snapshots(),
+        builder: (context, orderSnapshots) {
+          if (orderSnapshots.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (orderSnapshots.data.docs.length == 0) {
+            return Center(
+              child: Text('No order history found!'),
+            );
+          }
+          return StreamBuilder(
+            stream:
+                FirebaseFirestore.instance.collection('food-items').snapshots(),
+            builder: (ctx, foodItemSnapshots) {
+              if (foodItemSnapshots.connectionState ==
+                  ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              final foodItemDocs = orderSnapshots.data.docs;
+              final orderedFoodDocs = foodItemSnapshots.data.docs;
+              var orderedFoodItemList = [];
+              for (var orderedItem in orderedFoodDocs) {
+                for (var foodItem in foodItemDocs) {
+                  if (orderedItem.id == foodItem.id) {
+                    orderedFoodItemList.add(foodItem);
                   }
-                  final foodItemDocs = orderSnapshots.data.docs;
-                  final cartFoodDocs = foodItemSnapshots.data.docs;
-                  return ListView.builder(
-                    itemCount: foodItemDocs.length,
-                    itemBuilder: (ctx, index) => OrderWidget(),
-                    // itemBuilder: (ctx, index) =>
-                    //     Text(foodItemDocs[index]['noOfItems'].toString()),
-                  );
-                });
-          }),
+                }
+              }
+              return ListView.builder(
+                itemCount: foodItemDocs.length,
+                itemBuilder: (ctx, index) => OrderWidget(
+                  title: orderedFoodItemList[index]['title'],
+                  imgPath: orderedFoodItemList[index]['imgPath'],
+                  noOfItems: orderedFoodDocs[index]['noOfItems'],
+                  totalCost: orderedFoodDocs[index]['totalCost'],
+                  orderTime: orderedFoodDocs[index]['orderTime'],
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

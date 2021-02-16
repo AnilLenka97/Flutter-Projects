@@ -32,8 +32,8 @@ class _FoodItemWidgetState extends State<FoodItemWidget> {
         .set({
           'noOfItems': 1,
         })
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
+        .then((value) => print("Item Added to Cart"))
+        .catchError((error) => print("Failed to add item to Cart: $error"));
   }
 
   @override

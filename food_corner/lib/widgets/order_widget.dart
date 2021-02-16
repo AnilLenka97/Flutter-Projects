@@ -1,6 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class OrderWidget extends StatelessWidget {
+  final String title;
+  final String imgPath;
+  final int noOfItems;
+  final int totalCost;
+  final Timestamp orderTime;
+  OrderWidget({
+    @required this.title,
+    @required this.imgPath,
+    @required this.noOfItems,
+    @required this.totalCost,
+    @required this.orderTime,
+  });
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,7 +34,7 @@ class OrderWidget extends StatelessWidget {
                   bottomLeft: Radius.circular(10.0),
                 ),
                 child: Image.network(
-                  'https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8bWVhbHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80',
+                  imgPath,
                   height: 150,
                   fit: BoxFit.cover,
                 ),
@@ -36,7 +49,7 @@ class OrderWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    'Food Item',
+                    title,
                     style: TextStyle(
                       color: Colors.green,
                       fontSize: 18,
@@ -46,7 +59,7 @@ class OrderWidget extends StatelessWidget {
                     overflow: TextOverflow.fade,
                   ),
                   Text(
-                    '₹ 999',
+                    '₹ $totalCost',
                     style: TextStyle(
                       color: Colors.green,
                       fontSize: 22,
@@ -54,7 +67,7 @@ class OrderWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'No of items : 5',
+                    'No of items : $noOfItems',
                     style: TextStyle(
                       color: Colors.green,
                       fontSize: 16,
@@ -62,7 +75,7 @@ class OrderWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Ordered: 13-12-2021',
+                    'Ordered: $orderTime',
                     style: TextStyle(color: Colors.black54),
                   ),
                 ],

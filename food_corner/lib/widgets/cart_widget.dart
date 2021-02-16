@@ -1,9 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class CartWidget extends StatefulWidget {
+  final String foodItemId;
   final String foodName;
   final int price;
-  CartWidget({@required this.foodName, @required this.price});
+  final int noOfItems;
+  CartWidget(
+      {@required this.foodName,
+      @required this.foodItemId,
+      @required this.price,
+      @required this.noOfItems});
   @override
   _CartWidgetState createState() => _CartWidgetState();
 }
@@ -12,11 +20,37 @@ class _CartWidgetState extends State<CartWidget> {
   int noOfItems = 1;
   int foodPrice;
   int totalPrice;
+  final _userId = FirebaseAuth.instance.currentUser.uid;
+  final CollectionReference _users =
+      FirebaseFirestore.instance.collection('users');
+
+  void changeNoOfItemsInCart(int val) {
+    _users
+        .doc(_userId)
+        .collection('cart-items')
+        .doc(widget.foodItemId)
+        .set({
+          'noOfItems': val,
+        })
+        .then((value) => print("Item Added to Cart"))
+        .catchError((error) => print("Failed to add item to Cart: $error"));
+  }
+
+  void removeItemFromCart() {
+    _users
+        .doc(_userId)
+        .collection('cart-items')
+        .doc(widget.foodItemId)
+        .delete()
+        .then((value) => print("Food item Deleted"))
+        .catchError((error) => print("Failed to delete the item: $error"));
+  }
 
   @override
   void initState() {
     super.initState();
     foodPrice = widget.price;
+    noOfItems = widget.noOfItems;
   }
 
   @override
@@ -81,10 +115,38 @@ class _CartWidgetState extends State<CartWidget> {
                     children: [
                       RawMaterialButton(
                         onPressed: () {
-                          setState(() {
-                            noOfItems -= 1;
-                            foodPrice = foodPrice - widget.price;
-                          });
+                          int val = noOfItems - 1;
+                          if (val >= 1) {
+                            changeNoOfItemsInCart(val);
+                            setState(() {
+                              foodPrice = foodPrice - widget.price;
+                            });
+                          } else {
+                            final snackBar = SnackBar(
+                              elevation: 5,
+                              content: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                      'Want to remove the item from your cart? '),
+                                  FlatButton(
+                                    child: Text(
+                                      'Remove',
+                                      style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      removeItemFromCart();
+                                      Scaffold.of(context)
+                                          .hideCurrentSnackBar();
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                            Scaffold.of(context).showSnackBar(snackBar);
+                          }
                         },
                         child: Icon(
                           Icons.remove,
@@ -100,10 +162,19 @@ class _CartWidgetState extends State<CartWidget> {
                       ),
                       RawMaterialButton(
                         onPressed: () {
-                          setState(() {
-                            noOfItems += 1;
-                            foodPrice = foodPrice + widget.price;
-                          });
+                          int val = noOfItems + 1;
+                          if (val <= 5) {
+                            changeNoOfItemsInCart(val);
+                            setState(() {
+                              foodPrice = foodPrice - widget.price;
+                            });
+                          } else {
+                            final snackBar = SnackBar(
+                              content: Text(
+                                  'You can\'t add more than 5 items in a particular category!'),
+                            );
+                            Scaffold.of(context).showSnackBar(snackBar);
+                          }
                         },
                         child: Icon(
                           Icons.add,
