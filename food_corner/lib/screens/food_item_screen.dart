@@ -76,15 +76,39 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
                 child: CircularProgressIndicator(),
               );
             }
-            final foodDocs = foodSnapshots.data.docs;
-            return ListView.builder(
-              itemCount: foodDocs.length,
-              itemBuilder: (ctx, index) => FoodItemWidget(
-                title: foodDocs[index]['title'],
-                imgPath: foodDocs[index]['imgPath'],
-                price: foodDocs[index]['price'],
-                id: foodDocs[index].id,
-              ),
+            return StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(userId)
+                  .collection('cart-items')
+                  .snapshots(),
+              builder: (ctx, cartItemSnapshot) {
+                if (cartItemSnapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                final foodDocs = foodSnapshots.data.docs;
+                final cartItemDocs = cartItemSnapshot.data.docs;
+                List<String> cartItemIdList = [];
+                for (var data in cartItemDocs) {
+                  cartItemIdList.add(data.id);
+                }
+                return ListView.builder(
+                  itemCount: foodDocs.length,
+                  itemBuilder: (ctx, index) => FoodItemWidget(
+                    title: foodDocs[index]['title'],
+                    imgPath: foodDocs[index]['imgPath'],
+                    price: foodDocs[index]['price'],
+                    id: foodDocs[index].id,
+                    isItemAddedToCart:
+                        cartItemIdList.contains(foodDocs[index].id)
+                            ? true
+                            : false,
+                  ),
+                );
+              },
             );
           },
         ),

@@ -3,23 +3,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FoodItemWidget extends StatefulWidget {
-  final title;
-  final imgPath;
-  final price;
-  final id;
+  final String title;
+  final String imgPath;
+  final int price;
+  final String id;
+  final bool isItemAddedToCart;
   FoodItemWidget(
       {@required this.title,
       @required this.imgPath,
       @required this.price,
-      @required this.id});
+      @required this.id,
+      @required this.isItemAddedToCart});
   @override
   _FoodItemWidgetState createState() => _FoodItemWidgetState();
 }
 
 class _FoodItemWidgetState extends State<FoodItemWidget> {
-  var _isAddedToCart = false;
-  var _isClicked = false;
-  var _isLoading = false;
+  bool _isAddedToCart;
+  bool _isClicked = false;
   final String _userId = FirebaseAuth.instance.currentUser.uid;
   final CollectionReference _users =
       FirebaseFirestore.instance.collection('users');
@@ -34,6 +35,13 @@ class _FoodItemWidgetState extends State<FoodItemWidget> {
         })
         .then((value) => print("Item Added to Cart"))
         .catchError((error) => print("Failed to add item to Cart: $error"));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _isAddedToCart = widget.isItemAddedToCart;
+    _isClicked = widget.isItemAddedToCart;
   }
 
   @override
