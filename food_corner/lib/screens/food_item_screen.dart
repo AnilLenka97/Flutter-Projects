@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:food_corner/models/food_item.dart';
-import 'package:food_corner/utilities/data_access_from_firebase.dart';
 import '../widgets/food_item_widget.dart';
 import '../widgets/drawer_widget.dart';
 import 'cart_screen.dart';
+import 'package:badges/badges.dart';
 
 class FoodItemScreen extends StatefulWidget {
   static const String id = 'FoodItemScreen';
@@ -39,6 +39,8 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
     getCurrentUser();
   }
 
+  final fireStoreInstance = FirebaseFirestore.instance;
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading)
@@ -51,11 +53,37 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
           title: Text('Food Corner'),
           elevation: 5,
           actions: [
-            IconButton(
-              icon: Icon(Icons.shopping_cart),
-              onPressed: () {
-                Navigator.pushNamed(context, CartScreen.id);
-              },
+            Badge(
+              padding: EdgeInsets.all(4.0),
+              position: BadgePosition.topEnd(
+                top: -2.0,
+                end: 4.0,
+              ),
+              elevation: 3,
+              animationType: BadgeAnimationType.fade,
+              // badgeContent: Text(noOfItemsAddedToCart.toString()),
+              child: IconButton(
+                icon: Icon(Icons.shopping_cart),
+                onPressed: () {
+                  Navigator.pushNamed(context, CartScreen.id);
+                },
+              ),
+              badgeContent: StreamBuilder(
+                stream: fireStoreInstance
+                    .collection('users')
+                    .doc(userId)
+                    .collection('cart-items')
+                    .snapshots(),
+                builder: (ctx, cartItemSnapshot) {
+                  if (cartItemSnapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  return Text(cartItemSnapshot.data.docs.length.toString());
+                },
+              ),
             ),
           ],
         ),
@@ -68,29 +96,29 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
         ),
         backgroundColor: Theme.of(context).backgroundColor,
         body: StreamBuilder(
-          stream:
-              FirebaseFirestore.instance.collection('food-items').snapshots(),
-          builder: (ctx, foodSnapshots) {
-            if (foodSnapshots.connectionState == ConnectionState.waiting) {
+          stream: fireStoreInstance
+              .collection('users')
+              .doc(userId)
+              .collection('cart-items')
+              .snapshots(),
+          builder: (ctx, cartItemSnapshot) {
+            if (cartItemSnapshot.connectionState == ConnectionState.waiting) {
               return Center(
                 child: CircularProgressIndicator(),
               );
             }
+            final cartItemDocs = cartItemSnapshot.data.docs;
             return StreamBuilder(
               stream: FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(userId)
-                  .collection('cart-items')
+                  .collection('food-items')
                   .snapshots(),
-              builder: (ctx, cartItemSnapshot) {
-                if (cartItemSnapshot.connectionState ==
-                    ConnectionState.waiting) {
+              builder: (ctx, foodSnapshots) {
+                if (foodSnapshots.connectionState == ConnectionState.waiting) {
                   return Center(
                     child: CircularProgressIndicator(),
                   );
                 }
                 final foodDocs = foodSnapshots.data.docs;
-                final cartItemDocs = cartItemSnapshot.data.docs;
                 List<String> cartItemIdList = [];
                 for (var data in cartItemDocs) {
                   cartItemIdList.add(data.id);

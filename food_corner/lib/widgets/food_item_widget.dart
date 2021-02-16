@@ -8,12 +8,14 @@ class FoodItemWidget extends StatefulWidget {
   final int price;
   final String id;
   final bool isItemAddedToCart;
-  FoodItemWidget(
-      {@required this.title,
-      @required this.imgPath,
-      @required this.price,
-      @required this.id,
-      @required this.isItemAddedToCart});
+
+  FoodItemWidget({
+    @required this.title,
+    @required this.imgPath,
+    @required this.price,
+    @required this.id,
+    @required this.isItemAddedToCart,
+  });
   @override
   _FoodItemWidgetState createState() => _FoodItemWidgetState();
 }
