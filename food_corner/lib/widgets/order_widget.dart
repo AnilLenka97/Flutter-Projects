@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class OrderWidget extends StatelessWidget {
   final String title;
@@ -51,7 +52,6 @@ class OrderWidget extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      color: Colors.green,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -69,13 +69,13 @@ class OrderWidget extends StatelessWidget {
                   Text(
                     'No of items : $noOfItems',
                     style: TextStyle(
-                      color: Colors.green,
+                      color: Colors.black54,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    'Ordered: $orderTime',
+                    'Ordered: ${DateFormat.yMMMMEEEEd().format(orderTime.toDate())}',
                     style: TextStyle(color: Colors.black54),
                   ),
                 ],

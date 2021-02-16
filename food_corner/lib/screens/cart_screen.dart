@@ -12,24 +12,44 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   final String _uid = FirebaseAuth.instance.currentUser.uid;
   final _users = FirebaseFirestore.instance.collection('users');
-  void initiateOrders() {}
-  getData() async {}
+  var cartData;
+
+  //adding order data to database
+  void initiateOrders() {
+    for (var data in cartData) {
+      makeOrder(
+        noOfItems: data['noOfItems'],
+        foodItemId: data.id,
+        orderTime: Timestamp.now(),
+      );
+      removeItemFromCart(data.id);
+    }
+  }
+
+  removeItemFromCart(String foodItemId) {
+    _users
+        .doc(_uid)
+        .collection('cart-items')
+        .doc(foodItemId)
+        .delete()
+        .then((value) => print("Item Deleted from Cart"))
+        .catchError(
+            (error) => print("Failed to delete item from Cart: $error"));
+  }
 
   // adding order data to firebase database one by one
-  void makeOrder(
-    String orderId,
+  void makeOrder({
+    String foodItemId,
     int noOfItems,
-    String orderTime,
-    int totalCost,
-  ) {
+    Timestamp orderTime,
+  }) {
     _users
         .doc(_uid)
         .collection('order-history')
-        .doc(orderId)
-        .set({
+        .add({
+          'foodItemId': foodItemId,
           'noOfItems': noOfItems,
           'orderTime': orderTime,
-          'totalCost': totalCost,
         })
         .then((value) => print("Order Added"))
         .catchError((error) => print("Failed to add Order: $error"));
@@ -65,6 +85,7 @@ class _CartScreenState extends State<CartScreen> {
                 );
               }
               final cartFoodDocs = cartFoodSnapshots.data.docs;
+              cartData = cartFoodDocs;
               final foodItemDocs = foodItemSnapshots.data.docs;
               var cartList = [];
               var cartItemNumberList = [];
@@ -81,6 +102,7 @@ class _CartScreenState extends State<CartScreen> {
                 itemBuilder: (ctx, index) => CartWidget(
                   foodItemId: cartList[index].id,
                   foodName: cartList[index]['title'],
+                  imgPath: cartList[index]['imgPath'],
                   price: cartList[index]['price'],
                   noOfItems: cartItemNumberList[index],
                 ),

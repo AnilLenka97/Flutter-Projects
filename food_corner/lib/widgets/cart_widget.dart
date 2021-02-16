@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 class CartWidget extends StatefulWidget {
   final String foodItemId;
   final String foodName;
+  final String imgPath;
   final int price;
   final int noOfItems;
   CartWidget(
       {@required this.foodName,
+      @required this.imgPath,
       @required this.foodItemId,
       @required this.price,
       @required this.noOfItems});
@@ -17,9 +19,6 @@ class CartWidget extends StatefulWidget {
 }
 
 class _CartWidgetState extends State<CartWidget> {
-  int noOfItems = 1;
-  int foodPrice;
-  int totalPrice;
   final _userId = FirebaseAuth.instance.currentUser.uid;
   final CollectionReference _users =
       FirebaseFirestore.instance.collection('users');
@@ -47,13 +46,6 @@ class _CartWidgetState extends State<CartWidget> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    foodPrice = widget.price;
-    noOfItems = widget.noOfItems;
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
       height: 150,
@@ -74,7 +66,7 @@ class _CartWidgetState extends State<CartWidget> {
                   bottomLeft: Radius.circular(10.0),
                 ),
                 child: Image.network(
-                  'https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8bWVhbHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80',
+                  widget.imgPath,
                   height: 150,
                   fit: BoxFit.cover,
                 ),
@@ -98,14 +90,14 @@ class _CartWidgetState extends State<CartWidget> {
                     overflow: TextOverflow.fade,
                   ),
                   Text(
-                    '₹ $foodPrice',
+                    '₹ ${widget.price * widget.noOfItems}',
                     style: TextStyle(
                       color: Colors.green,
                       fontSize: 22,
                     ),
                   ),
                   Text(
-                    'No of items : $noOfItems',
+                    'No of items : ${widget.noOfItems}',
                     style: TextStyle(
                       color: Colors.black54,
                       fontSize: 16,
@@ -115,12 +107,9 @@ class _CartWidgetState extends State<CartWidget> {
                     children: [
                       RawMaterialButton(
                         onPressed: () {
-                          int val = noOfItems - 1;
+                          int val = widget.noOfItems - 1;
                           if (val >= 1) {
                             changeNoOfItemsInCart(val);
-                            setState(() {
-                              foodPrice = foodPrice - widget.price;
-                            });
                           } else {
                             final snackBar = SnackBar(
                               elevation: 5,
@@ -154,20 +143,19 @@ class _CartWidgetState extends State<CartWidget> {
                         ),
                         elevation: 5,
                         fillColor: Colors.green,
-                        constraints:
-                            BoxConstraints.tightFor(width: 80, height: 35),
+                        constraints: BoxConstraints.tightFor(
+                          width: 80,
+                          height: 35,
+                        ),
                       ),
                       SizedBox(
                         width: 10,
                       ),
                       RawMaterialButton(
                         onPressed: () {
-                          int val = noOfItems + 1;
+                          int val = widget.noOfItems + 1;
                           if (val <= 5) {
                             changeNoOfItemsInCart(val);
-                            setState(() {
-                              foodPrice = foodPrice - widget.price;
-                            });
                           } else {
                             final snackBar = SnackBar(
                               content: Text(

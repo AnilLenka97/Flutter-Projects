@@ -19,6 +19,7 @@ class OrderScreen extends StatelessWidget {
             .collection('users')
             .doc(_uid)
             .collection('order-history')
+            .orderBy('orderTime', descending: true)
             .snapshots(),
         builder: (context, orderSnapshots) {
           if (orderSnapshots.connectionState == ConnectionState.waiting) {
@@ -41,23 +42,24 @@ class OrderScreen extends StatelessWidget {
                   child: CircularProgressIndicator(),
                 );
               }
-              final foodItemDocs = orderSnapshots.data.docs;
-              final orderedFoodDocs = foodItemSnapshots.data.docs;
+              final foodItemDocs = foodItemSnapshots.data.docs;
+              final orderedFoodDocs = orderSnapshots.data.docs;
               var orderedFoodItemList = [];
               for (var orderedItem in orderedFoodDocs) {
                 for (var foodItem in foodItemDocs) {
-                  if (orderedItem.id == foodItem.id) {
+                  if (orderedItem['foodItemId'] == foodItem.id) {
                     orderedFoodItemList.add(foodItem);
                   }
                 }
               }
               return ListView.builder(
-                itemCount: foodItemDocs.length,
+                itemCount: orderedFoodItemList.length,
                 itemBuilder: (ctx, index) => OrderWidget(
                   title: orderedFoodItemList[index]['title'],
                   imgPath: orderedFoodItemList[index]['imgPath'],
                   noOfItems: orderedFoodDocs[index]['noOfItems'],
-                  totalCost: orderedFoodDocs[index]['totalCost'],
+                  totalCost: orderedFoodItemList[index]['price'] *
+                      orderedFoodDocs[index]['noOfItems'],
                   orderTime: orderedFoodDocs[index]['orderTime'],
                 ),
               );
