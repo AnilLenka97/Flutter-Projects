@@ -178,7 +178,6 @@ class _LoginFormState extends State<LoginForm> {
                     buttonTitle: _isLogin ? 'Login' : 'Register',
                     onPressed: () {
                       _trySubmit();
-                      //Navigator.pushNamed(context, FoodItemScreen.id);
                     },
                   ),
                 SizedBox(
@@ -190,7 +189,6 @@ class _LoginFormState extends State<LoginForm> {
                       setState(() {
                         _isLogin = !_isLogin;
                       });
-                      //Navigator.pushNamed(context, RegistrationScreen.id);
                     },
                     child: Text(
                       _isLogin ? 'Register here' : 'I have an account',

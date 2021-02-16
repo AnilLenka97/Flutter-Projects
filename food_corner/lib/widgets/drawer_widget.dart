@@ -58,7 +58,9 @@ class DrawerWidget extends StatelessWidget {
                 fontSize: 20,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+            },
           ),
           ListTile(
             dense: true,
