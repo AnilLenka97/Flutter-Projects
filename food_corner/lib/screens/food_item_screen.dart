@@ -22,6 +22,7 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
   String userEmail;
   String userName;
   String userId;
+  int counter;
 
   getCurrentUser() async {
     User user = _auth.currentUser;
@@ -46,6 +47,7 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) return Spinner();
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: Text('Food Corner'),
         elevation: 5,
@@ -72,10 +74,6 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
                   .collection('cart-items')
                   .snapshots(),
               builder: (ctx, cartItemSnapshot) {
-                if (cartItemSnapshot.connectionState ==
-                    ConnectionState.waiting) {
-                  return Spinner();
-                }
                 return Text(cartItemSnapshot.data.docs.length.toString());
               },
             ),
@@ -89,7 +87,6 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
           FirebaseAuth.instance.signOut();
         },
       ),
-      backgroundColor: Theme.of(context).backgroundColor,
       body: StreamBuilder(
         stream: fireStoreInstance
             .collection('users')
@@ -101,6 +98,7 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
             return Spinner();
           }
           final cartItemDocs = cartItemSnapshot.data.docs;
+          counter = cartItemDocs.length;
           return StreamBuilder(
             stream:
                 FirebaseFirestore.instance.collection('food-items').snapshots(),
