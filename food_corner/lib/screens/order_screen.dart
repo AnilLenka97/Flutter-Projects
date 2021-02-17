@@ -1,15 +1,10 @@
-import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_corner/services/firebase_api.dart';
 import 'package:food_corner/widgets/order_widget.dart';
-
 import '../widgets/spinner_widget.dart';
 
 class OrderScreen extends StatelessWidget {
   static const String id = 'OrderScreen';
-  final String _uid = FirebaseAuth.instance.currentUser.uid;
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +14,7 @@ class OrderScreen extends StatelessWidget {
       ),
       backgroundColor: Theme.of(context).backgroundColor,
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('users')
-            .doc(_uid)
-            .collection('order-history')
-            .orderBy('orderTime', descending: true)
-            .snapshots(),
+        stream: FirebaseApi().getOrderHistorySnapshotsInDescOrder(),
         builder: (context, orderSnapshots) {
           if (orderSnapshots.connectionState == ConnectionState.waiting) {
             return Spinner();
@@ -35,8 +25,7 @@ class OrderScreen extends StatelessWidget {
             );
           }
           return StreamBuilder(
-            stream:
-                FirebaseFirestore.instance.collection('food-items').snapshots(),
+            stream: FirebaseApi().getFoodItemSnapshots(),
             builder: (ctx, foodItemSnapshots) {
               if (foodItemSnapshots.connectionState ==
                   ConnectionState.waiting) {

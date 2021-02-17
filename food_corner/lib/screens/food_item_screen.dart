@@ -22,7 +22,6 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
   String userEmail;
   String userName;
   String userId;
-  int counter;
 
   getCurrentUser() async {
     User user = _auth.currentUser;
@@ -60,6 +59,7 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
             ),
             elevation: 3,
             animationType: BadgeAnimationType.fade,
+            badgeColor: Colors.white70,
             // badgeContent: Text(noOfItemsAddedToCart.toString()),
             child: IconButton(
               icon: Icon(Icons.shopping_cart),
@@ -74,7 +74,11 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
                   .collection('cart-items')
                   .snapshots(),
               builder: (ctx, cartItemSnapshot) {
-                return Text(cartItemSnapshot.data.docs.length.toString());
+                return Text(
+                  cartItemSnapshot.hasData
+                      ? cartItemSnapshot.data.docs.length.toString()
+                      : '',
+                );
               },
             ),
           ),
@@ -98,7 +102,6 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
             return Spinner();
           }
           final cartItemDocs = cartItemSnapshot.data.docs;
-          counter = cartItemDocs.length;
           return StreamBuilder(
             stream:
                 FirebaseFirestore.instance.collection('food-items').snapshots(),
