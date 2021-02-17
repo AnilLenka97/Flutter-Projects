@@ -59,7 +59,8 @@ class DrawerWidget extends StatelessWidget {
               ),
             ),
             onTap: () {
-              Navigator.pop(context);
+              // Navigator.pop(context);
+              Navigator.pushNamed(context, 'drawer_widget');
             },
           ),
           ListTile(

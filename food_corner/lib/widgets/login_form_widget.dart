@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:food_corner/widgets/spinner_widget.dart';
 import 'reusable_raised_button.dart';
 import '../models/floor_details.dart';
 
@@ -168,11 +169,7 @@ class _LoginFormState extends State<LoginForm> {
                 SizedBox(
                   height: 20,
                 ),
-                if (widget.isLoading)
-                  CircularProgressIndicator(
-                    backgroundColor: Colors.white38,
-                    strokeWidth: 3,
-                  ),
+                if (widget.isLoading) Spinner(),
                 if (!widget.isLoading)
                   ReusableRaisedButton(
                     buttonTitle: _isLogin ? 'Login' : 'Register',

@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_corner/widgets/order_widget.dart';
+
+import '../widgets/spinner_widget.dart';
 
 class OrderScreen extends StatelessWidget {
   static const String id = 'OrderScreen';
@@ -23,9 +27,7 @@ class OrderScreen extends StatelessWidget {
             .snapshots(),
         builder: (context, orderSnapshots) {
           if (orderSnapshots.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return Spinner();
           }
           if (orderSnapshots.data.docs.length == 0) {
             return Center(
@@ -38,9 +40,7 @@ class OrderScreen extends StatelessWidget {
             builder: (ctx, foodItemSnapshots) {
               if (foodItemSnapshots.connectionState ==
                   ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
+                return Spinner();
               }
               final foodItemDocs = foodItemSnapshots.data.docs;
               final orderedFoodDocs = orderSnapshots.data.docs;

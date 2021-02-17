@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_corner/widgets/spinner_widget.dart';
 import '../widgets/cart_widget.dart';
 
 class CartScreen extends StatefulWidget {
@@ -70,9 +71,7 @@ class _CartScreenState extends State<CartScreen> {
             .snapshots(),
         builder: (ctx, cartFoodSnapshots) {
           if (cartFoodSnapshots.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return Spinner();
           }
           return StreamBuilder(
             stream:
@@ -80,9 +79,7 @@ class _CartScreenState extends State<CartScreen> {
             builder: (ctx, foodItemSnapshots) {
               if (foodItemSnapshots.connectionState ==
                   ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
+                return Spinner();
               }
               final cartFoodDocs = cartFoodSnapshots.data.docs;
               cartData = cartFoodDocs;

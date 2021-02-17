@@ -6,6 +6,7 @@ import 'package:food_corner/screens/login_screen.dart';
 import 'package:food_corner/screens/order_screen.dart';
 import 'package:food_corner/screens/profile_screen.dart';
 import 'package:food_corner/screens/registration_screen.dart';
+import 'package:food_corner/widgets/spinner_widget.dart';
 import 'screens/welcome_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
         CartScreen.id: (context) => CartScreen(),
         OrderScreen.id: (context) => OrderScreen(),
         ProfileScreen.id: (context) => ProfileScreen(),
+        'drawer_widget': (context) => Spinner(),
       },
     );
   }
