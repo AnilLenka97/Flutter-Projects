@@ -1,6 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../screens/food_item_screen.dart';
+import '../services/firebase_api.dart';
+import '../widgets/empty_page_with_button.dart';
 import '../widgets/spinner_widget.dart';
 import '../widgets/cart_widget.dart';
 
@@ -11,49 +12,17 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  final String _uid = FirebaseAuth.instance.currentUser.uid;
-  final _users = FirebaseFirestore.instance.collection('users');
   var cartData;
 
   //adding order data to database
   void initiateOrders() {
     for (var data in cartData) {
-      makeOrder(
+      FirebaseApi().addItemToOrderHistory(
         noOfItems: data['noOfItems'],
         foodItemId: data.id,
-        orderTime: Timestamp.now(),
       );
-      removeItemFromCart(data.id);
+      FirebaseApi().removeItemFromCart(data.id);
     }
-  }
-
-  removeItemFromCart(String foodItemId) {
-    _users
-        .doc(_uid)
-        .collection('cart-items')
-        .doc(foodItemId)
-        .delete()
-        .then((value) => print("Item Deleted from Cart"))
-        .catchError(
-            (error) => print("Failed to delete item from Cart: $error"));
-  }
-
-  // adding order data to firebase database one by one
-  void makeOrder({
-    String foodItemId,
-    int noOfItems,
-    Timestamp orderTime,
-  }) {
-    _users
-        .doc(_uid)
-        .collection('order-history')
-        .add({
-          'foodItemId': foodItemId,
-          'noOfItems': noOfItems,
-          'orderTime': orderTime,
-        })
-        .then((value) => print("Order Added"))
-        .catchError((error) => print("Failed to add Order: $error"));
   }
 
   @override
@@ -64,25 +33,25 @@ class _CartScreenState extends State<CartScreen> {
       ),
       backgroundColor: Theme.of(context).backgroundColor,
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('users')
-            .doc(_uid)
-            .collection('cart-items')
-            .snapshots(),
+        stream: FirebaseApi().getCartItemSnapshots(),
         builder: (ctx, cartFoodSnapshots) {
-          if (cartFoodSnapshots.connectionState == ConnectionState.waiting) {
+          if (cartFoodSnapshots.connectionState == ConnectionState.waiting)
             return Spinner();
-          }
+          final cartFoodDocs = cartFoodSnapshots.data.docs;
+          cartData = cartFoodDocs;
+          if (cartFoodDocs.length == 0)
+            return EmptyPageWithAButton(
+              message: 'No items in Cart',
+              buttonTitle: 'See Items!',
+              onPress: () {
+                Navigator.pushNamed(context, FoodItemScreen.id);
+              },
+            );
           return StreamBuilder(
-            stream:
-                FirebaseFirestore.instance.collection('food-items').snapshots(),
+            stream: FirebaseApi().getFoodItemSnapshots(),
             builder: (ctx, foodItemSnapshots) {
-              if (foodItemSnapshots.connectionState ==
-                  ConnectionState.waiting) {
+              if (foodItemSnapshots.connectionState == ConnectionState.waiting)
                 return Spinner();
-              }
-              final cartFoodDocs = cartFoodSnapshots.data.docs;
-              cartData = cartFoodDocs;
               final foodItemDocs = foodItemSnapshots.data.docs;
               var cartList = [];
               var cartItemNumberList = [];

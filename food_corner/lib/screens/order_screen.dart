@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:food_corner/services/firebase_api.dart';
-import 'package:food_corner/widgets/order_widget.dart';
+import '../screens/food_item_screen.dart';
+import '../widgets/empty_page_with_button.dart';
+import '../services/firebase_api.dart';
+import '../widgets/order_widget.dart';
 import '../widgets/spinner_widget.dart';
 
 class OrderScreen extends StatelessWidget {
@@ -19,9 +21,14 @@ class OrderScreen extends StatelessWidget {
           if (orderSnapshots.connectionState == ConnectionState.waiting) {
             return Spinner();
           }
-          if (orderSnapshots.data.docs.length == 0) {
-            return Center(
-              child: Text('No order history found!'),
+          final orderedFoodDocs = orderSnapshots.data.docs;
+          if (orderedFoodDocs.length == 0) {
+            return EmptyPageWithAButton(
+              message: 'No order history found',
+              buttonTitle: 'Order Now!',
+              onPress: () {
+                Navigator.pushNamed(context, FoodItemScreen.id);
+              },
             );
           }
           return StreamBuilder(
@@ -32,7 +39,6 @@ class OrderScreen extends StatelessWidget {
                 return Spinner();
               }
               final foodItemDocs = foodItemSnapshots.data.docs;
-              final orderedFoodDocs = orderSnapshots.data.docs;
               var orderedFoodItemList = [];
               for (var orderedItem in orderedFoodDocs) {
                 for (var foodItem in foodItemDocs) {
