@@ -28,6 +28,24 @@ class FirebaseApi {
     return userProfileInfo;
   }
 
+  Future<bool> updateUserProfileInfo({
+    String name,
+    String floorNo,
+    int cubicleNo,
+  }) async {
+    await cloudDb
+        .collection('users')
+        .doc(user.uid)
+        .update({
+          'name': name,
+          'floorNo': floorNo,
+          'cubicleNo': cubicleNo,
+        })
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+    return true;
+  }
+
   Stream<QuerySnapshot> getCartItemSnapshots() {
     return cloudDb
         .collection('users')

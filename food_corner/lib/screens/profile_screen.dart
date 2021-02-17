@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../models/floor_details.dart';
@@ -13,10 +11,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final _auth = FirebaseAuth.instance;
-  final _db = FirebaseFirestore.instance;
   final _formKey = GlobalKey<FormState>();
-  String _userId;
   String _userEmail;
   String _userName;
   String _userFloorNo;
@@ -25,9 +20,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isEditModeActive = false;
 
   void getUserData() async {
-    User user = _auth.currentUser;
-    _userId = user.uid;
-    _userEmail = user.email;
+    _userEmail = FirebaseApi().user.email;
     Map userProfileInfo = await FirebaseApi().getUserProfileInfo();
     _userName = userProfileInfo['name'];
     _userFloorNo = userProfileInfo['floorNo'];
@@ -38,40 +31,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  void updateUserData({
-    String name,
-    String floorNo,
-    int cubicleNo,
-  }) async {
-    setState(() {
-      _isLoading = true;
-    });
-    await _db
-        .collection('users')
-        .doc(_userId)
-        .update({
-          'name': name,
-          'floorNo': floorNo,
-          'cubicleNo': cubicleNo,
-        })
-        .then((value) => print("User Updated"))
-        .catchError((error) => print("Failed to update user: $error"));
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
-  void _trySubmit() {
+  void _trySubmit() async {
     final isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
     if (isValid) {
       _formKey.currentState.save();
+      setState(() {
+        _isLoading = true;
+      });
       // update user information
-      updateUserData(
+      bool isCompleted = await FirebaseApi().updateUserProfileInfo(
         name: _userName.trim(),
         floorNo: _userFloorNo,
         cubicleNo: _userCubicleNo,
       );
+      setState(() {
+        _isLoading = !isCompleted;
+      });
       setState(() {
         _isEditModeActive = !_isEditModeActive;
       });
@@ -232,10 +208,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 borderRadius: BorderRadius.circular(7.0),
                               ),
                               elevation: 5.0,
-                              child: Icon(
-                                _isEditModeActive ? Icons.save : Icons.edit,
-                                size: 40,
-                                color: Colors.white,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    _isEditModeActive ? Icons.save : Icons.edit,
+                                    size: 17,
+                                    color: Colors.white,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    _isEditModeActive ? 'Save' : 'Edit',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 17,
+                                    ),
+                                  )
+                                ],
                               ),
                               onPressed: () {
                                 if (_isEditModeActive) {

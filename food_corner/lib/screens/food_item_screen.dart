@@ -17,11 +17,9 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
   var _isLoading = true;
   String userEmail;
   String userName;
-  String userId;
 
   getCurrentUser() async {
     userEmail = FirebaseApi().user.email;
-    userId = FirebaseApi().user.uid;
     Map userProfileInfo = await FirebaseApi().getUserProfileInfo();
     userName = userProfileInfo['name'];
     if (!mounted) return;
