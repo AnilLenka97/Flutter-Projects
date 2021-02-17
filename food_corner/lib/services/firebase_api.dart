@@ -5,13 +5,28 @@ class FirebaseApi {
   var auth;
   var cloudDb;
   User user;
+  Map userProfileInfo;
+
   FirebaseApi() {
     this.auth = FirebaseAuth.instance;
     this.cloudDb = FirebaseFirestore.instance;
     this.user = auth.currentUser;
   }
 
-  getUserProfileInfo() {}
+  void signOut() {
+    auth.signOut();
+  }
+
+  getUserProfileInfo() async {
+    await cloudDb.collection('users').doc(user.uid).get().then((value) {
+      userProfileInfo = {
+        'name': value.data()['name'],
+        'floorNo': value.data()['floorNo'],
+        'cubicleNo': value.data()['cubicleNo'],
+      };
+    });
+    return userProfileInfo;
+  }
 
   Stream<QuerySnapshot> getCartItemSnapshots() {
     return cloudDb

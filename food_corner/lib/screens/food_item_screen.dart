@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:badges/badges.dart';
-import '../models/food_item.dart';
+import '../services/firebase_api.dart';
 import '../widgets/spinner_widget.dart';
 import '../widgets/food_item_widget.dart';
 import '../widgets/drawer_widget.dart';
@@ -16,19 +14,17 @@ class FoodItemScreen extends StatefulWidget {
 }
 
 class _FoodItemScreenState extends State<FoodItemScreen> {
-  final _auth = FirebaseAuth.instance;
-
   var _isLoading = true;
   String userEmail;
   String userName;
   String userId;
 
   getCurrentUser() async {
-    User user = _auth.currentUser;
-    userEmail = user.email;
-    userId = user.uid;
-    var userData = await FoodItem().getUserBasedData(userId);
-    userName = userData['name'];
+    userEmail = FirebaseApi().user.email;
+    userId = FirebaseApi().user.uid;
+    Map userProfileInfo = await FirebaseApi().getUserProfileInfo();
+    userName = userProfileInfo['name'];
+    if (!mounted) return;
     setState(() {
       _isLoading = false;
     });
@@ -39,8 +35,6 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
     super.initState();
     getCurrentUser();
   }
-
-  final fireStoreInstance = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -68,11 +62,7 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
               },
             ),
             badgeContent: StreamBuilder(
-              stream: fireStoreInstance
-                  .collection('users')
-                  .doc(userId)
-                  .collection('cart-items')
-                  .snapshots(),
+              stream: FirebaseApi().getCartItemSnapshots(),
               builder: (ctx, cartItemSnapshot) {
                 return Text(
                   cartItemSnapshot.hasData
@@ -88,23 +78,18 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
         userEmail: userEmail,
         userName: userName,
         onTapOnLogout: () {
-          FirebaseAuth.instance.signOut();
+          FirebaseApi().signOut();
         },
       ),
       body: StreamBuilder(
-        stream: fireStoreInstance
-            .collection('users')
-            .doc(userId)
-            .collection('cart-items')
-            .snapshots(),
+        stream: FirebaseApi().getCartItemSnapshots(),
         builder: (ctx, cartItemSnapshot) {
           if (cartItemSnapshot.connectionState == ConnectionState.waiting) {
             return Spinner();
           }
           final cartItemDocs = cartItemSnapshot.data.docs;
           return StreamBuilder(
-            stream:
-                FirebaseFirestore.instance.collection('food-items').snapshots(),
+            stream: FirebaseApi().getFoodItemSnapshots(),
             builder: (ctx, foodSnapshots) {
               if (foodSnapshots.connectionState == ConnectionState.waiting) {
                 return Spinner();

@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:food_corner/models/floor_details.dart';
-import 'package:food_corner/models/food_item.dart';
-import 'package:food_corner/widgets/spinner_widget.dart';
+import '../models/floor_details.dart';
+import '../services/firebase_api.dart';
+import '../widgets/spinner_widget.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const String id = 'ProfileScreen';
@@ -28,10 +28,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     User user = _auth.currentUser;
     _userId = user.uid;
     _userEmail = user.email;
-    var userData = await FoodItem().getUserBasedData(_userId);
-    _userName = userData['name'];
-    _userFloorNo = userData['floorNo'];
-    _userCubicleNo = userData['cubicleNo'];
+    Map userProfileInfo = await FirebaseApi().getUserProfileInfo();
+    _userName = userProfileInfo['name'];
+    _userFloorNo = userProfileInfo['floorNo'];
+    _userCubicleNo = userProfileInfo['cubicleNo'];
+    if (!mounted) return;
     setState(() {
       _isLoading = false;
     });
