@@ -63,7 +63,6 @@ class OrderWidget extends StatelessWidget {
                     style: TextStyle(
                       color: Colors.green,
                       fontSize: 22,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(

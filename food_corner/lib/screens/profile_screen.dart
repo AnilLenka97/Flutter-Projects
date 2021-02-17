@@ -19,7 +19,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String _userEmail;
   String _userName;
   String _userFloorNo;
-  int _userCubicalNo;
+  int _userCubicleNo;
   bool _isLoading = false;
   bool _isEditModeActive = false;
 
@@ -30,7 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var userData = await FoodItem().getUserBasedData(_userId);
     _userName = userData['name'];
     _userFloorNo = userData['floorNo'];
-    _userCubicalNo = userData['cubicalNo'];
+    _userCubicleNo = userData['cubicleNo'];
     setState(() {
       _isLoading = false;
     });
@@ -39,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void updateUserData({
     String name,
     String floorNo,
-    int cubicalNo,
+    int cubicleNo,
   }) async {
     await _db
         .collection('users')
@@ -47,7 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .update({
           'name': name,
           'floorNo': floorNo,
-          'cubicalNo': cubicalNo,
+          'cubicleNo': cubicleNo,
         })
         .then((value) => print("User Updated"))
         .catchError((error) => print("Failed to update user: $error"));
@@ -62,7 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       updateUserData(
         name: _userName.trim(),
         floorNo: _userFloorNo,
-        cubicalNo: _userCubicalNo,
+        cubicleNo: _userCubicleNo,
       );
       setState(() {
         _isEditModeActive = !_isEditModeActive;
@@ -175,8 +175,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     _isEditModeActive
                         ? TextFormField(
-                            key: ValueKey('cubicalNo'),
-                            initialValue: _userCubicalNo.toString(),
+                            key: ValueKey('cubicleNo'),
+                            initialValue: _userCubicleNo.toString(),
                             keyboardType: TextInputType.number,
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
@@ -194,13 +194,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               return null;
                             },
                             decoration:
-                                InputDecoration(labelText: 'Cubical Number'),
+                                InputDecoration(labelText: 'Cubicle Number'),
                             onSaved: (value) {
-                              _userCubicalNo = num.tryParse(value);
+                              _userCubicleNo = num.tryParse(value);
                             },
                           )
                         : Text(
-                            'Cubical No : ${_userCubicalNo.toString()}',
+                            'Cubicle No : ${_userCubicleNo.toString()}',
                             style: TextStyle(
                               fontSize: 25,
                               color: Colors.grey,

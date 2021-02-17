@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
     BuildContext ctx,
     String name,
     String floorNo,
-    int cubicalNo,
+    int cubicleNo,
   ) async {
     UserCredential userCredential;
 
@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
           'email': email,
           'name': name,
           'floorNo': floorNo,
-          'cubicalNo': cubicalNo,
+          'cubicleo': cubicleNo,
         });
       }
     } catch (err) {

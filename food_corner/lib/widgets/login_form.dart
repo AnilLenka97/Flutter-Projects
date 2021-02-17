@@ -13,7 +13,7 @@ class LoginForm extends StatefulWidget {
     BuildContext ctx,
     String name,
     String floorNo,
-    int cubicalNo,
+    int cubicleNo,
   ) submitFn;
   @override
   _LoginFormState createState() => _LoginFormState();
@@ -139,7 +139,7 @@ class _LoginFormState extends State<LoginForm> {
                         ),
                       if (!_isLogin)
                         TextFormField(
-                          key: ValueKey('cubicalNo'),
+                          key: ValueKey('cubicleNo'),
                           keyboardType: TextInputType.number,
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
@@ -157,7 +157,7 @@ class _LoginFormState extends State<LoginForm> {
                             return null;
                           },
                           decoration:
-                              InputDecoration(labelText: 'Cubical Number'),
+                              InputDecoration(labelText: 'Cubicle Number'),
                           onSaved: (value) {
                             _userCubicleNo = num.tryParse(value);
                           },

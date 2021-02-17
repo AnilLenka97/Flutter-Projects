@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 
 class FoodItem {
   final String id;
@@ -14,8 +13,6 @@ class FoodItem {
   });
 
   uploadFoodItems(title, imgPath, price) async {
-    print(
-        'dfghjkaaaaaaaaaaaaaaaaaaaaaaa----------------------------------------------------------------------================');
     await FirebaseFirestore.instance.collection('food-items').add({
       'title': title,
       'imgPath': imgPath,
