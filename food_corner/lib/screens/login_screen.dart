@@ -32,9 +32,6 @@ class _LoginScreenState extends State<LoginScreen> {
       if (isLogin) {
         userCredential = await _auth.signInWithEmailAndPassword(
             email: email, password: password);
-
-        // developing stage
-        // FoodItem().foodItemConstructor();
       } else {
         userCredential = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
@@ -46,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
           'email': email,
           'name': name,
           'floorNo': floorNo,
-          'cubicleo': cubicleNo,
+          'cubicleNo': cubicleNo,
         });
       }
     } catch (err) {
