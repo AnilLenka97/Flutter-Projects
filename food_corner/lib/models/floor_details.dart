@@ -1,5 +1,5 @@
 class Floor {
-  List<String> floorInfo = [
+  static const List<String> floorInfo = [
     'ground floor',
     '1st floor',
     '2nd floor',

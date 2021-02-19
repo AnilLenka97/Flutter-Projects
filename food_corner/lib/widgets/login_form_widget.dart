@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:food_corner/widgets/spinner_widget.dart';
+import '../widgets/spinner_widget.dart';
 import 'reusable_raised_button.dart';
 import '../models/floor_details.dart';
 
@@ -129,8 +129,7 @@ class _LoginFormState extends State<LoginForm> {
                               _userFloorNo = value;
                             });
                           },
-                          items: Floor()
-                              .floorInfo
+                          items: Floor.floorInfo
                               .map((e) => DropdownMenuItem(
                                     child: Text(e),
                                     value: e,

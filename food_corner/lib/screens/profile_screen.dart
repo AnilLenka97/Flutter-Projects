@@ -138,8 +138,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       _userFloorNo = value;
                                     });
                                   },
-                                  items: Floor()
-                                      .floorInfo
+                                  items: Floor.floorInfo
                                       .map((e) => DropdownMenuItem(
                                             child: Text(e),
                                             value: e,
