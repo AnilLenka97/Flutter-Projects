@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
+import 'package:provider/provider.dart';
 import '../services/firebase_api.dart';
 import '../widgets/spinner_widget.dart';
 import '../widgets/food_item_widget.dart';
@@ -17,6 +18,8 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
   var _isLoading = true;
   String userEmail;
   String userName;
+  int noOfCartItems = 0;
+  var cartItemCountProvider;
 
   getCurrentUser() async {
     userEmail = FirebaseApi().user.email;
@@ -32,7 +35,10 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
   void initState() {
     super.initState();
     getCurrentUser();
+    cartItemCountProvider = Provider.of<CartItemCount>(context, listen: false);
   }
+
+  final dara = 'asdfghjkl';
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +65,10 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
                 Navigator.pushNamed(context, CartScreen.id);
               },
             ),
+            // badgeContent: Consumer<CartItemCount>(
+            //   builder: (ctx, value, child) =>
+            //       Text(value.noOfCartItems.toString()),
+            // ),
             badgeContent: StreamBuilder(
               stream: FirebaseApi().getCartItemSnapshots(),
               builder: (ctx, cartItemSnapshot) {
@@ -86,6 +96,12 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
             return Spinner();
           }
           final cartItemDocs = cartItemSnapshot.data.docs;
+
+          // setState(() {
+          //   noOfCartItems = cartItemDocs.length;
+          // });
+          //cartItemCountProvider.changeCartItemCount(cartItemDocs.length);
+
           return StreamBuilder(
             stream: FirebaseApi().getFoodItemSnapshots(),
             builder: (ctx, foodSnapshots) {
@@ -114,5 +130,14 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
         },
       ),
     );
+  }
+}
+
+class CartItemCount extends ChangeNotifier {
+  int noOfCartItems = 0;
+  void changeCartItemCount(int count) {
+    print(count);
+    noOfCartItems = count;
+    notifyListeners();
   }
 }

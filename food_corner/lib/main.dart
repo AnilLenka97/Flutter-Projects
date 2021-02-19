@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import './screens/cart_screen.dart';
 import './screens/food_item_screen.dart';
 import './screens/login_screen.dart';
 import './screens/order_screen.dart';
 import './screens/profile_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
 import './widgets/spinner_widget.dart';
 
 void main() async {
@@ -27,14 +28,17 @@ class MyApp extends StatelessWidget {
         accentColorBrightness: Brightness.dark,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: StreamBuilder(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, userSnapshot) {
-          if (userSnapshot.connectionState == ConnectionState.waiting)
-            return Spinner();
-          if (userSnapshot.hasData) return FoodItemScreen();
-          return LoginScreen();
-        },
+      home: ChangeNotifierProvider<CartItemCount>(
+        create: (ctx) => CartItemCount(),
+        child: StreamBuilder(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, userSnapshot) {
+            if (userSnapshot.connectionState == ConnectionState.waiting)
+              return Spinner();
+            if (userSnapshot.hasData) return FoodItemScreen();
+            return LoginScreen();
+          },
+        ),
       ),
       routes: {
         LoginScreen.id: (context) => LoginScreen(),
