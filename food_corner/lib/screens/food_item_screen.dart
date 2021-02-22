@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
+import 'package:food_corner/services/local_auth.dart';
 import 'package:provider/provider.dart';
 import '../services/firebase_api.dart';
 import '../widgets/spinner_widget.dart';
@@ -20,6 +21,16 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
   String userName;
   int noOfCartItems = 0;
   var cartItemCountProvider;
+  bool localAuthCheck;
+
+  authenticateUser() async {
+    bool authResult = await LocalAuth.authenticate();
+    if (!authResult) FirebaseApi().signOut();
+    if (!mounted) return;
+    setState(() {
+      localAuthCheck = !authResult;
+    });
+  }
 
   getCurrentUser() async {
     userEmail = FirebaseApi().user.email;
@@ -34,15 +45,16 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
   @override
   void initState() {
     super.initState();
+    localAuthCheck = !LocalAuth.isLoggedInByUserIdAndPassword;
+    if (localAuthCheck) authenticateUser();
     getCurrentUser();
-    cartItemCountProvider = Provider.of<CartItemCount>(context, listen: false);
+    // cartItemCountProvider = Provider.of<CartItemCount>(context, listen: false);
   }
-
-  final dara = 'asdfghjkl';
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) return Spinner();
+    if (localAuthCheck || _isLoading) return Spinner();
+    // if () return Spinner();
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -130,14 +142,5 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
         },
       ),
     );
-  }
-}
-
-class CartItemCount extends ChangeNotifier {
-  int noOfCartItems = 0;
-  void changeCartItemCount(int count) {
-    print(count);
-    noOfCartItems = count;
-    notifyListeners();
   }
 }

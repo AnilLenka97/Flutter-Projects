@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+import './services/local_auth.dart';
+import './services/provider.dart';
 import './screens/cart_screen.dart';
 import './screens/food_item_screen.dart';
 import './screens/login_screen.dart';
@@ -16,7 +18,6 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
             if (userSnapshot.connectionState == ConnectionState.waiting)
               return Spinner();
             if (userSnapshot.hasData) return FoodItemScreen();
+            LocalAuth.isLoggedInByUserIdAndPassword = true;
             return LoginScreen();
           },
         ),
