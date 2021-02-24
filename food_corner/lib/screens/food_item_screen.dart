@@ -1,17 +1,14 @@
-import 'dart:io';
-
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
 import 'package:food_corner/services/local_auth.dart';
 import 'package:food_corner/widgets/notification_dialog_box_widget.dart';
-import 'package:provider/provider.dart';
 import '../services/firebase_api.dart';
 import '../widgets/spinner_widget.dart';
 import '../widgets/food_item_widget.dart';
 import '../widgets/drawer_widget.dart';
 import 'cart_screen.dart';
+import 'order_screen.dart';
 
 class FoodItemScreen extends StatefulWidget {
   static const String id = 'FoodItemScreen';
@@ -27,14 +24,19 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
   int noOfCartItems = 0;
   var cartItemCountProvider;
   bool localAuthCheck = false;
+  final firebaseMessage = FirebaseMessaging();
 
   authenticateUser() async {
     bool authResult = await LocalAuth.authenticate();
-    if (!authResult) FirebaseApi().signOut();
+    if (!authResult) {
+      FirebaseApi().signOut();
+      return;
+    }
     if (!mounted) return;
     setState(() {
       localAuthCheck = !authResult;
     });
+    pushNotificationConfigure();
   }
 
   getCurrentUser() async {
@@ -47,69 +49,62 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
     });
   }
 
-  callOrderNotification() async {
-    HttpsCallable httpCall =
-        FirebaseFunctions.instance.httpsCallable('orderSuccessfulNotification');
-    var data = await FirebaseApi().getUserProfileInfo();
-    httpCall(data).then((value) => print('call successful'));
+  static Future<dynamic> backgroundMessageHandler(
+      Map<String, dynamic> message) async {
+    if (message.containsKey('data')) {
+      print('Data Message');
+      final dynamic data = message['data'];
+    }
+
+    if (message.containsKey('notification')) {
+      print('Notification Message');
+      final dynamic notification = message['notification'];
+    }
+  }
+
+  pushNotificationConfigure() {
+    try {
+      firebaseMessage.configure(
+        onMessage: (msg) async {
+          print('onMessage: $msg');
+          await showDialog(
+            context: context,
+            builder: (context) {
+              return NotificationAlert(
+                title: 'Title',
+                message: 'This is a sample text.',
+              );
+            },
+          );
+          return;
+        },
+        onResume: (msg) async {
+          print('onResume: $msg');
+          await Navigator.pushNamed(context, OrderScreen.id);
+          return;
+        },
+        onLaunch: (msg) async {
+          print('onLaunch: $msg');
+          await Navigator.pushNamed(context, OrderScreen.id);
+          return;
+        },
+        onBackgroundMessage: backgroundMessageHandler,
+      );
+      firebaseMessage.getToken().then((token) {
+        FirebaseApi().updateDeviceToken(token);
+      });
+    } catch (err) {
+      print('firebaseMessagingError: $err');
+    }
   }
 
   @override
   void initState() {
-    final firebaseMessage = FirebaseMessaging();
-    firebaseMessage.configure(
-      onMessage: (msg) async {
-        print(msg);
-        await showDialog(
-          context: context,
-          builder: (context) {
-            return NotificationAlert(
-              title: 'Title',
-              message: 'This is a sample text.',
-            );
-          },
-        );
-        NotificationAlert(
-          title: 'Title',
-          message: 'This is a sample text.',
-        );
-        return;
-      },
-      onResume: (msg) {
-        print(msg);
-        NotificationAlert(
-          title: 'Title',
-          message: 'This is a sample text.',
-        );
-        return;
-      },
-      onLaunch: (msg) {
-        print(msg);
-        NotificationAlert(
-          title: 'Title',
-          message: 'This is a sample text.',
-        );
-        return;
-      },
-      // onBackgroundMessage: (msg) {
-      //   NotificationAlert(
-      //     title: 'Title',
-      //     message: 'This is a sample text.',
-      //   );
-      //   return;
-      // },
-    );
-    firebaseMessage.getToken().then((token) {
-      print("Device Token: $token");
-    });
     super.initState();
-    // localAuthCheck = !LocalAuth.isLoggedInByUserIdAndPassword;
-    // if (localAuthCheck) authenticateUser();
+    localAuthCheck = !LocalAuth.isLoggedInByUserIdAndPassword;
+    if (localAuthCheck) authenticateUser();
     getCurrentUser();
     // cartItemCountProvider = Provider.of<CartItemCount>(context, listen: false);
-
-    //test
-    // callOrderNotification();
   }
 
   @override
