@@ -46,6 +46,17 @@ class FirebaseApi {
     return true;
   }
 
+  void updateDeviceToken(String token) {
+    cloudDb
+        .collection('users')
+        .doc(user.uid)
+        .update({
+          'deviceToken': token,
+        })
+        .then((value) => print("Device Token Updated"))
+        .catchError((error) => print("Failed to update Device Token: $error"));
+  }
+
   Stream<QuerySnapshot> getCartItemSnapshots() {
     return cloudDb
         .collection('users')
