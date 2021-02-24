@@ -1,6 +1,11 @@
+import 'dart:io';
+
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
 import 'package:food_corner/services/local_auth.dart';
+import 'package:food_corner/widgets/notification_dialog_box_widget.dart';
 import 'package:provider/provider.dart';
 import '../services/firebase_api.dart';
 import '../widgets/spinner_widget.dart';
@@ -21,7 +26,7 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
   String userName;
   int noOfCartItems = 0;
   var cartItemCountProvider;
-  bool localAuthCheck;
+  bool localAuthCheck = false;
 
   authenticateUser() async {
     bool authResult = await LocalAuth.authenticate();
@@ -42,13 +47,69 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
     });
   }
 
+  callOrderNotification() async {
+    HttpsCallable httpCall =
+        FirebaseFunctions.instance.httpsCallable('orderSuccessfulNotification');
+    var data = await FirebaseApi().getUserProfileInfo();
+    httpCall(data).then((value) => print('call successful'));
+  }
+
   @override
   void initState() {
+    final firebaseMessage = FirebaseMessaging();
+    firebaseMessage.configure(
+      onMessage: (msg) async {
+        print(msg);
+        await showDialog(
+          context: context,
+          builder: (context) {
+            return NotificationAlert(
+              title: 'Title',
+              message: 'This is a sample text.',
+            );
+          },
+        );
+        NotificationAlert(
+          title: 'Title',
+          message: 'This is a sample text.',
+        );
+        return;
+      },
+      onResume: (msg) {
+        print(msg);
+        NotificationAlert(
+          title: 'Title',
+          message: 'This is a sample text.',
+        );
+        return;
+      },
+      onLaunch: (msg) {
+        print(msg);
+        NotificationAlert(
+          title: 'Title',
+          message: 'This is a sample text.',
+        );
+        return;
+      },
+      // onBackgroundMessage: (msg) {
+      //   NotificationAlert(
+      //     title: 'Title',
+      //     message: 'This is a sample text.',
+      //   );
+      //   return;
+      // },
+    );
+    firebaseMessage.getToken().then((token) {
+      print("Device Token: $token");
+    });
     super.initState();
-    localAuthCheck = !LocalAuth.isLoggedInByUserIdAndPassword;
-    if (localAuthCheck) authenticateUser();
+    // localAuthCheck = !LocalAuth.isLoggedInByUserIdAndPassword;
+    // if (localAuthCheck) authenticateUser();
     getCurrentUser();
     // cartItemCountProvider = Provider.of<CartItemCount>(context, listen: false);
+
+    //test
+    // callOrderNotification();
   }
 
   @override
