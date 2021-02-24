@@ -7,7 +7,7 @@ import io.flutter.plugins.GeneratedPluginRegistrant;
 import io.flutter.plugins.firebasemessaging.FlutterFirebaseMessagingService;
 import io.flutter.plugins.firebasemessaging.FirebaseMessagingPlugin;
 
-public class Application extends FlutterApplication implements PluginRegistrantCallback {
+public class Application extends FlutterFragmentActivity implements PluginRegistrantCallback {
     @Override
     public void onCreate() {
         super.onCreate();
