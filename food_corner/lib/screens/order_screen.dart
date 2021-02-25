@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../screens/food_item_screen.dart';
 import '../widgets/empty_page_with_button.dart';
 import '../services/firebase_api.dart';
 import '../widgets/order_widget.dart';
@@ -27,7 +26,7 @@ class OrderScreen extends StatelessWidget {
               message: 'No order history found',
               buttonTitle: 'Order Now!',
               onPress: () {
-                Navigator.pushNamed(context, FoodItemScreen.id);
+                Navigator.pop(context);
               },
             );
           }

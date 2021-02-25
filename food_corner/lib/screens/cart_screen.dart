@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../screens/food_item_screen.dart';
 import '../services/firebase_api.dart';
 import '../widgets/empty_page_with_button.dart';
 import '../widgets/spinner_widget.dart';
@@ -44,7 +43,7 @@ class _CartScreenState extends State<CartScreen> {
               message: 'No items in Cart',
               buttonTitle: 'See Items!',
               onPress: () {
-                Navigator.pushNamed(context, FoodItemScreen.id);
+                Navigator.pop(context);
               },
             );
           return StreamBuilder(

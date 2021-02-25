@@ -28,11 +28,12 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
 
   authenticateUser() async {
     bool authResult = await LocalAuth.authenticate();
-    if (!authResult) {
-      FirebaseApi().signOut();
-      return;
-    }
+    // if (!authResult) {
+    //   FirebaseApi().signOut();
+    //   return;
+    // }
     if (!mounted) return;
+    // LocalAuth.isLoggedInByUserIdAndPassword = false;
     setState(() {
       localAuthCheck = !authResult;
     });

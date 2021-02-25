@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_corner/screens/profile_screen.dart';
+import '../screens/profile_screen.dart';
 import '../screens/cart_screen.dart';
 import '../screens/order_screen.dart';
 
@@ -72,6 +72,7 @@ class DrawerWidget extends StatelessWidget {
               ),
             ),
             onTap: () {
+              Navigator.pop(context);
               Navigator.pushNamed(context, ProfileScreen.id);
             },
           ),
@@ -85,6 +86,7 @@ class DrawerWidget extends StatelessWidget {
               ),
             ),
             onTap: () {
+              Navigator.pop(context);
               Navigator.pushNamed(context, OrderScreen.id);
             },
           ),
@@ -98,6 +100,7 @@ class DrawerWidget extends StatelessWidget {
               ),
             ),
             onTap: () {
+              Navigator.pop(context);
               Navigator.pushNamed(context, CartScreen.id);
             },
           ),
