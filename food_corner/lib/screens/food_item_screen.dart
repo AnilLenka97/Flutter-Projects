@@ -1,8 +1,8 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
-import 'package:food_corner/services/local_auth.dart';
-import 'package:food_corner/widgets/notification_dialog_box_widget.dart';
+import '../services/local_auth.dart';
+import '../widgets/notification_dialog_box_widget.dart';
 import '../services/firebase_api.dart';
 import '../widgets/spinner_widget.dart';
 import '../widgets/food_item_widget.dart';
@@ -26,17 +26,21 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
   bool localAuthCheck = false;
   final firebaseMessage = FirebaseMessaging();
 
-  authenticateUser() async {
-    bool authResult = await LocalAuth.authenticate();
-    // if (!authResult) {
-    //   FirebaseApi().signOut();
-    //   return;
-    // }
-    if (!mounted) return;
-    // LocalAuth.isLoggedInByUserIdAndPassword = false;
-    setState(() {
-      localAuthCheck = !authResult;
-    });
+  initializeLocalAuthAndPushNotification() async {
+    localAuthCheck = !LocalAuth.isLoggedInByUserIdAndPassword;
+    if (localAuthCheck) {
+      bool authResult = await LocalAuth.authenticate();
+      if (!authResult) {
+        FirebaseApi().signOut();
+        return;
+      }
+      if (!mounted) return;
+      LocalAuth.isLoggedInByUserIdAndPassword = false;
+      setState(() {
+        localAuthCheck = !authResult;
+      });
+      pushNotificationConfigure();
+    }
     pushNotificationConfigure();
   }
 
@@ -53,21 +57,21 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
   static Future<dynamic> backgroundMessageHandler(
       Map<String, dynamic> message) async {
     if (message.containsKey('data')) {
-      print('Data Message');
       final dynamic data = message['data'];
+      print(data);
     }
 
     if (message.containsKey('notification')) {
       print('Notification Message');
       final dynamic notification = message['notification'];
+      print(notification);
     }
   }
 
-  pushNotificationConfigure() {
+  pushNotificationConfigure() async {
     try {
       firebaseMessage.configure(
         onMessage: (msg) async {
-          print('onMessage: $msg');
           await showDialog(
             context: context,
             builder: (context) {
@@ -101,10 +105,9 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
 
   @override
   void initState() {
-    super.initState();
-    localAuthCheck = !LocalAuth.isLoggedInByUserIdAndPassword;
-    if (localAuthCheck) authenticateUser();
+    initializeLocalAuthAndPushNotification();
     getCurrentUser();
+    super.initState();
     // cartItemCountProvider = Provider.of<CartItemCount>(context, listen: false);
   }
 
