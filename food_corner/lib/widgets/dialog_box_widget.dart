@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 class NotificationAlert extends StatelessWidget {
   final String title;
   final String message;
+  final Widget actionWidget;
   NotificationAlert({
     @required this.title,
     @required this.message,
+    this.actionWidget,
   });
   @override
   Widget build(BuildContext context) {
@@ -17,8 +19,9 @@ class NotificationAlert extends StatelessWidget {
         child: Text(message),
       ),
       actions: [
+        actionWidget,
         FlatButton(
-          child: Text('OK'),
+          child: Text('Close'),
           onPressed: () {
             Navigator.of(context).pop();
           },
