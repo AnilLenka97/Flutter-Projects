@@ -23,6 +23,7 @@ class FirebaseApi {
         'name': value.data()['name'],
         'floorNo': value.data()['floorNo'],
         'cubicleNo': value.data()['cubicleNo'],
+        'role': value.data()['role'],
       };
     });
     return userProfileInfo;

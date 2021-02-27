@@ -10,6 +10,8 @@ import './screens/login_screen.dart';
 import './screens/order_screen.dart';
 import './screens/profile_screen.dart';
 import './widgets/spinner_widget.dart';
+import './screens/admin/home_screen.dart';
+import './screens/seller/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +50,8 @@ class MyApp extends StatelessWidget {
         CartScreen.id: (context) => CartScreen(),
         OrderScreen.id: (context) => OrderScreen(),
         ProfileScreen.id: (context) => ProfileScreen(),
+        AdminHomeScreen.id: (context) => AdminHomeScreen(),
+        SellerHomeScreen.id: (context) => SellerHomeScreen(),
       },
     );
   }
