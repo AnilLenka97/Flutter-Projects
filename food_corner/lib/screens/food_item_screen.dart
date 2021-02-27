@@ -30,12 +30,12 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
     localAuthCheck = !LocalAuth.isLoggedInByUserIdAndPassword;
     if (localAuthCheck) {
       bool authResult = await LocalAuth.authenticate();
-      if (!authResult) {
-        FirebaseApi().signOut();
-        return;
-      }
+      // if (!authResult) {
+      //   FirebaseApi().signOut();
+      //   return;
+      // }
       if (!mounted) return;
-      LocalAuth.isLoggedInByUserIdAndPassword = false;
+      // LocalAuth.isLoggedInByUserIdAndPassword = false;
       setState(() {
         localAuthCheck = !authResult;
       });
@@ -105,7 +105,7 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
 
   @override
   void initState() {
-    initializeLocalAuthAndPushNotification();
+    // initializeLocalAuthAndPushNotification();
     getCurrentUser();
     super.initState();
     // cartItemCountProvider = Provider.of<CartItemCount>(context, listen: false);
