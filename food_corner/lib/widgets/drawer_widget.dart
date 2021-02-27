@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import '../screens/profile_screen.dart';
-import '../screens/cart_screen.dart';
-import '../screens/order_screen.dart';
+import '../screens/consumer/cart_screen.dart';
+import '../screens/consumer/order_screen.dart';
+import '../services/firebase_api.dart';
 
 class DrawerWidget extends StatelessWidget {
   final userName;
   final userEmail;
-  final Function onTapOnLogout;
+  final bool isOrderLinkAvailable;
+  final bool isCartLinkAvailable;
 
   DrawerWidget({
     @required this.userName,
     @required this.userEmail,
-    @required this.onTapOnLogout,
+    this.isCartLinkAvailable = false,
+    this.isOrderLinkAvailable = false,
   });
 
   @override
@@ -76,34 +79,36 @@ class DrawerWidget extends StatelessWidget {
               Navigator.pushNamed(context, ProfileScreen.id);
             },
           ),
-          ListTile(
-            dense: true,
-            leading: Icon(Icons.open_in_browser),
-            title: Text(
-              'My Orders',
-              style: TextStyle(
-                fontSize: 20,
+          if (isOrderLinkAvailable)
+            ListTile(
+              dense: true,
+              leading: Icon(Icons.open_in_browser),
+              title: Text(
+                'My Orders',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
               ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, OrderScreen.id);
+              },
             ),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, OrderScreen.id);
-            },
-          ),
-          ListTile(
-            dense: true,
-            leading: Icon(Icons.shopping_cart),
-            title: Text(
-              'My Cart',
-              style: TextStyle(
-                fontSize: 20,
+          if (isCartLinkAvailable)
+            ListTile(
+              dense: true,
+              leading: Icon(Icons.shopping_cart),
+              title: Text(
+                'My Cart',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
               ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, CartScreen.id);
+              },
             ),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, CartScreen.id);
-            },
-          ),
           ListTile(
             dense: true,
             leading: Icon(Icons.exit_to_app),
@@ -113,7 +118,9 @@ class DrawerWidget extends StatelessWidget {
                 fontSize: 20,
               ),
             ),
-            onTap: onTapOnLogout,
+            onTap: () {
+              FirebaseApi().signOut();
+            },
           ),
         ],
       ),

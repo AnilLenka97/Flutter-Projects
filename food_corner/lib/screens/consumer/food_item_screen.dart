@@ -1,16 +1,16 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
-import '../services/local_auth.dart';
-import '../widgets/dialog_box_widget.dart';
-import '../services/firebase_api.dart';
-import '../widgets/spinner_widget.dart';
-import '../widgets/food_item_widget.dart';
-import '../widgets/drawer_widget.dart';
+import '../../services/local_auth.dart';
+import '../../widgets/dialog_box_widget.dart';
+import '../../services/firebase_api.dart';
+import '../../widgets/spinner_widget.dart';
+import '../../widgets/food_item_widget.dart';
+import '../../widgets/drawer_widget.dart';
 import 'cart_screen.dart';
 import 'order_screen.dart';
-import './admin/home_screen.dart';
-import './seller/home_screen.dart';
+import '../admin/home_screen.dart';
+import '../seller/home_screen.dart';
 
 class FoodItemScreen extends StatefulWidget {
   static const String id = 'FoodItemScreen';
@@ -174,9 +174,8 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
       drawer: DrawerWidget(
         userEmail: userEmail,
         userName: userName,
-        onTapOnLogout: () {
-          FirebaseApi().signOut();
-        },
+        isCartLinkAvailable: true,
+        isOrderLinkAvailable: true,
       ),
       body: StreamBuilder(
         stream: FirebaseApi().getCartItemSnapshots(),

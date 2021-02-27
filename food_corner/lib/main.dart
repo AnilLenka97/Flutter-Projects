@@ -4,14 +4,15 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import './services/local_auth.dart';
 import './services/provider.dart';
-import './screens/cart_screen.dart';
-import './screens/food_item_screen.dart';
+import 'screens/consumer/cart_screen.dart';
+import 'screens/consumer/food_item_screen.dart';
 import './screens/login_screen.dart';
-import './screens/order_screen.dart';
+import 'screens/consumer/order_screen.dart';
 import './screens/profile_screen.dart';
 import './widgets/spinner_widget.dart';
 import './screens/admin/home_screen.dart';
 import './screens/seller/home_screen.dart';
+import './screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
           builder: (context, userSnapshot) {
             if (userSnapshot.connectionState == ConnectionState.waiting)
               return Spinner();
-            if (userSnapshot.hasData) return FoodItemScreen();
+            if (userSnapshot.hasData) return HomeScreen();
             LocalAuth.isLoggedInByUserIdAndPassword = true;
             return LoginScreen();
           },
