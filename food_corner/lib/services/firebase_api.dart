@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
 
 class FirebaseApi {
   var auth;
@@ -110,5 +111,33 @@ class FirebaseApi {
 
   Stream<QuerySnapshot> getFoodItemSnapshots() {
     return cloudDb.collection('food-items').snapshots();
+  }
+
+  updateFoodItemAvailability({
+    @required String itemId,
+    @required bool isAvailable,
+  }) async {
+    return await cloudDb
+        .collection('food-items')
+        .doc(itemId)
+        .update({
+          'isAvailable': isAvailable,
+        })
+        .then((value) => print("Availability Updated"))
+        .catchError((error) => print("Failed to update availability: $error"));
+  }
+
+  updateFoodItemPrice({
+    @required String itemId,
+    @required int price,
+  }) async {
+    return await cloudDb
+        .collection('food-items')
+        .doc(itemId)
+        .update({
+          'price': price,
+        })
+        .then((value) => print("Price Updated"))
+        .catchError((error) => print("Failed to update price: $error"));
   }
 }

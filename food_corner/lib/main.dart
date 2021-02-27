@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import './services/local_auth.dart';
 import './services/provider.dart';
 import 'screens/consumer/cart_screen.dart';
-import 'screens/consumer/food_item_screen.dart';
+import 'screens/consumer/home_screen.dart';
 import './screens/login_screen.dart';
 import 'screens/consumer/order_screen.dart';
 import './screens/profile_screen.dart';
@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         LoginScreen.id: (context) => LoginScreen(),
-        FoodItemScreen.id: (context) => FoodItemScreen(),
+        ConsumerHomeScreen.id: (context) => ConsumerHomeScreen(),
         CartScreen.id: (context) => CartScreen(),
         OrderScreen.id: (context) => OrderScreen(),
         ProfileScreen.id: (context) => ProfileScreen(),

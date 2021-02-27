@@ -9,28 +9,31 @@ import '../../widgets/food_item_widget.dart';
 import '../../widgets/drawer_widget.dart';
 import 'cart_screen.dart';
 import 'order_screen.dart';
-import '../admin/home_screen.dart';
-import '../seller/home_screen.dart';
 
-class FoodItemScreen extends StatefulWidget {
-  static const String id = 'FoodItemScreen';
+class ConsumerHomeScreen extends StatefulWidget {
+  static const String id = 'ConsumerHomeScreen';
+  final String userEmail;
+  final String userName;
+  ConsumerHomeScreen({
+    @required this.userEmail,
+    @required this.userName,
+  });
 
   @override
-  _FoodItemScreenState createState() => _FoodItemScreenState();
+  _ConsumerHomeScreenState createState() => _ConsumerHomeScreenState();
 }
 
-class _FoodItemScreenState extends State<FoodItemScreen> {
-  var _isLoading = true;
+class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   String userEmail;
   String userName;
   int noOfCartItems = 0;
   var cartItemCountProvider;
-  bool localAuthCheck = false;
+  bool isBiometricsScanning = false;
   final firebaseMessage = FirebaseMessaging();
 
   initializeLocalAuthAndPushNotification() async {
-    localAuthCheck = !LocalAuth.isLoggedInByUserIdAndPassword;
-    if (localAuthCheck) {
+    isBiometricsScanning = !LocalAuth.isLoggedInByUserIdAndPassword;
+    if (isBiometricsScanning) {
       bool authResult = await LocalAuth.authenticate();
       // if (!authResult) {
       //   FirebaseApi().signOut();
@@ -39,21 +42,11 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
       if (!mounted) return;
       // LocalAuth.isLoggedInByUserIdAndPassword = false;
       setState(() {
-        localAuthCheck = !authResult;
+        isBiometricsScanning = !authResult;
       });
       pushNotificationConfigure();
     }
     pushNotificationConfigure();
-  }
-
-  getCurrentUser() async {
-    userEmail = FirebaseApi().user.email;
-    Map userProfileInfo = await FirebaseApi().getUserProfileInfo();
-    userName = userProfileInfo['name'];
-    if (!mounted) return;
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   static Future<dynamic> backgroundMessageHandler(
@@ -105,33 +98,18 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
     }
   }
 
-  initializeHomeScreen() async {
-    var userInfo = await FirebaseApi().getUserProfileInfo();
-    if (userInfo['role'] == 'admin') {
-      Navigator.pop(context);
-      Navigator.pushNamed(context, AdminHomeScreen.id);
-    } else if (userInfo['role'] == 'seller') {
-      Navigator.pop(context);
-      Navigator.pushNamed(context, SellerHomeScreen.id);
-    } else {
-      // Navigator.pop(context);
-      // Navigator.pushNamed(context, AdminHomeScreen.id);
-    }
-  }
-
   @override
   void initState() {
-    initializeHomeScreen();
+    userEmail = widget.userEmail;
+    userName = widget.userName;
     // initializeLocalAuthAndPushNotification();
-    getCurrentUser();
     super.initState();
     // cartItemCountProvider = Provider.of<CartItemCount>(context, listen: false);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (localAuthCheck || _isLoading) return Spinner();
-    // if () return Spinner();
+    if (isBiometricsScanning) return Spinner();
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
