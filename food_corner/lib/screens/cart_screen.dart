@@ -3,7 +3,9 @@ import 'package:flutter/widgets.dart';
 import '../services/firebase_api.dart';
 import '../widgets/empty_page_with_button.dart';
 import '../widgets/spinner_widget.dart';
+import '../widgets/dialog_box_widget.dart';
 import '../widgets/cart_widget.dart';
+import '../screens/order_screen.dart';
 
 class CartScreen extends StatefulWidget {
   static const String id = 'CartScreen';
@@ -23,6 +25,23 @@ class _CartScreenState extends State<CartScreen> {
       );
       FirebaseApi().removeItemFromCart(data.id);
     }
+    Navigator.pop(context);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return NotificationAlert(
+          title: 'Your Order(s) Placed Successfully',
+          message: 'Thank You!',
+          actionWidget: FlatButton(
+            child: Text('Goto Orders'),
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, OrderScreen.id);
+            },
+          ),
+        );
+      },
+    );
   }
 
   @override
