@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import '../services/firebase_api.dart';
 import '../widgets/empty_page_with_button.dart';
 import '../widgets/spinner_widget.dart';
@@ -78,17 +79,28 @@ class _CartScreenState extends State<CartScreen> {
       ),
       bottomNavigationBar: Container(
         height: 45,
-        child: RawMaterialButton(
-          child: Text(
-            'Make Order',
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.white,
-            ),
-          ),
-          fillColor: Colors.green,
-          onPressed: () {
-            initiateOrders();
+        child: StreamBuilder(
+          stream: FirebaseApi().getCartItemSnapshots(),
+          builder: (ctx, cartFoodSnapshots) {
+            if (cartFoodSnapshots.connectionState == ConnectionState.waiting)
+              return Spinner();
+            bool isCartEmpty =
+                cartFoodSnapshots.data.docs.length == 0 ? true : false;
+            return RawMaterialButton(
+              child: Text(
+                'Make Order',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
+              ),
+              fillColor: isCartEmpty ? Colors.grey : Colors.green,
+              onPressed: isCartEmpty
+                  ? null
+                  : () {
+                      initiateOrders();
+                    },
+            );
           },
         ),
       ),
