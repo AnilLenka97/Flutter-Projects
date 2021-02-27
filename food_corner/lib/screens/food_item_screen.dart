@@ -181,20 +181,36 @@ class _FoodItemScreenState extends State<FoodItemScreen> {
                 return Spinner();
               }
               final foodDocs = foodSnapshots.data.docs;
+              var availableFoodItemList = [];
               List<String> cartItemIdList = [];
-              for (var data in cartItemDocs) {
-                cartItemIdList.add(data.id);
+
+              // disable 'add to cart' buttons if item is already added to cart
+              for (var cartItem in cartItemDocs) {
+                cartItemIdList.add(cartItem.id);
+              }
+
+              // show only available food items
+              for (var foodItem in foodDocs) {
+                if (foodItem['isAvailable'])
+                  availableFoodItemList.add(foodItem);
+
+                // delete cartItem from cart which is not available
+                for (var cartItem in cartItemDocs) {
+                  if (cartItem.id == foodItem.id && !foodItem['isAvailable'])
+                    FirebaseApi().removeItemFromCart(foodItem.id);
+                }
               }
               return ListView.builder(
-                itemCount: foodDocs.length,
+                itemCount: availableFoodItemList.length,
                 itemBuilder: (ctx, index) => FoodItemWidget(
-                  title: foodDocs[index]['title'],
-                  imgPath: foodDocs[index]['imgPath'],
-                  price: foodDocs[index]['price'],
-                  id: foodDocs[index].id,
-                  isItemAddedToCart: cartItemIdList.contains(foodDocs[index].id)
-                      ? true
-                      : false,
+                  title: availableFoodItemList[index]['title'],
+                  imgPath: availableFoodItemList[index]['imgPath'],
+                  price: availableFoodItemList[index]['price'],
+                  id: availableFoodItemList[index].id,
+                  isItemAddedToCart:
+                      cartItemIdList.contains(availableFoodItemList[index].id)
+                          ? true
+                          : false,
                 ),
               );
             },
