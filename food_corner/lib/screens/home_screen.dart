@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String userRole;
 
   initializeHomeScreen() async {
-    var userInfo = await _firebaseApi.getUserProfileInfo();
+    var userInfo = await _firebaseApi.getCurrentUserProfileInfo();
     userName = userInfo['name'];
     userRole = userInfo['role'];
     userEmail = _firebaseApi.user.email;

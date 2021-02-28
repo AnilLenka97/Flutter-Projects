@@ -22,7 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void getUserData() async {
     _userEmail = FirebaseApi().user.email;
-    Map userProfileInfo = await FirebaseApi().getUserProfileInfo();
+    Map userProfileInfo = await FirebaseApi().getCurrentUserProfileInfo();
     _userName = userProfileInfo['name'];
     _userFloorNo = userProfileInfo['floorNo'];
     _userCubicleNo = userProfileInfo['cubicleNo'];
