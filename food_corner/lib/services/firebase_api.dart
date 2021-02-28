@@ -30,7 +30,7 @@ class FirebaseApi {
     return userProfileInfo;
   }
 
-  Future<bool> updateUserProfileInfo({
+  Future updateUserProfileInfo({
     String name,
     String floorNo,
     int cubicleNo,
@@ -45,10 +45,9 @@ class FirebaseApi {
         })
         .then((value) => print("User Updated"))
         .catchError((error) => print("Failed to update user: $error"));
-    return true;
   }
 
-  void updateDeviceToken(String token) {
+  updateDeviceToken(String token) {
     cloudDb
         .collection('users')
         .doc(user.uid)
@@ -111,6 +110,24 @@ class FirebaseApi {
 
   Stream<QuerySnapshot> getFoodItemSnapshots() {
     return cloudDb.collection('food-items').snapshots();
+  }
+
+  Future addNewFoodItem({
+    @required String title,
+    @required String imgPath,
+    @required int price,
+    bool isAvailable = false,
+  }) async {
+    await cloudDb
+        .collection('food-items')
+        .add({
+          'title': title,
+          'imgPath': imgPath,
+          'price': price,
+          'isAvailable': isAvailable,
+        })
+        .then((value) => print("Food item Added"))
+        .catchError((error) => print("Failed to add food item: $error"));
   }
 
   updateFoodItemAvailability({

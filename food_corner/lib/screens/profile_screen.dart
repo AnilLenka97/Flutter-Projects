@@ -17,6 +17,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String _userFloorNo;
   int _userCubicleNo;
   bool _isLoading = true;
+  bool _isProfileDataUpdating = false;
   bool _isEditModeActive = false;
 
   void getUserData() async {
@@ -37,18 +38,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (isValid) {
       _formKey.currentState.save();
       setState(() {
-        _isLoading = true;
+        _isProfileDataUpdating = true;
       });
       // update user information
-      bool isCompleted = await FirebaseApi().updateUserProfileInfo(
+      await FirebaseApi().updateUserProfileInfo(
         name: _userName.trim(),
         floorNo: _userFloorNo,
         cubicleNo: _userCubicleNo,
       );
+      if (!mounted) return;
       setState(() {
-        _isLoading = !isCompleted;
-      });
-      setState(() {
+        _isProfileDataUpdating = false;
         _isEditModeActive = !_isEditModeActive;
       });
     }
@@ -198,8 +198,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           SizedBox(
                             height: 15.0,
                           ),
-                          if (_isLoading) Spinner(),
-                          if (!_isLoading)
+                          if (_isProfileDataUpdating) Spinner(),
+                          if (!_isProfileDataUpdating)
                             RaisedButton(
                               padding: EdgeInsets.all(4),
                               color: Theme.of(context).primaryColor,
@@ -228,13 +228,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ],
                               ),
                               onPressed: () {
-                                if (_isEditModeActive) {
-                                  _trySubmit();
-                                } else {
-                                  setState(() {
-                                    _isEditModeActive = !_isEditModeActive;
-                                  });
-                                }
+                                _isEditModeActive
+                                    ? _trySubmit()
+                                    : setState(() {
+                                        _isEditModeActive = !_isEditModeActive;
+                                      });
                               },
                             ),
                         ],
