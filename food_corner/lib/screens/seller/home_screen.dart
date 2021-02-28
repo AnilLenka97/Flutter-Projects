@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:food_corner/widgets/seller/food_item_form_widget.dart';
-import '../../widgets/seller/food_item_widget.dart';
+import 'package:food_corner/widgets/seller/customer_order_widget.dart';
+import 'package:food_corner/widgets/spinner_widget.dart';
 import '../../services/firebase_api.dart';
-import '../../widgets/spinner_widget.dart';
 import '../../widgets/drawer_widget.dart';
 
 class SellerHomeScreen extends StatefulWidget {
@@ -34,49 +33,22 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Food Corner'),
+        title: Text('Food Corner(Order List)'),
       ),
       drawer: DrawerWidget(
         userName: userName,
         userEmail: userEmail,
+        isFoodSettingAvailable: true,
       ),
       body: StreamBuilder(
-        stream: _firebaseApi.getFoodItemSnapshots(),
-        builder: (context, foodItemSnapshot) {
-          if (foodItemSnapshot.connectionState == ConnectionState.waiting)
+        stream: _firebaseApi.getCustomerOrdersSnapshotsInDescOrder(),
+        builder: (context, orderSnapshot) {
+          if (orderSnapshot.connectionState == ConnectionState.waiting)
             return Spinner();
-          final foodItems = foodItemSnapshot.data.docs;
-
+          final customerOrders = orderSnapshot.data.docs;
           return ListView.builder(
-            itemCount: 1,
-            itemBuilder: (context, index) => FoodItem(
-              itemId: foodItems[index].id,
-              title: foodItems[index]['title'],
-              imgPath: foodItems[index]['imgPath'],
-              price: foodItems[index]['price'],
-              isAvailable: foodItems[index]['isAvailable'],
-            ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.green,
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-        elevation: 5.0,
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            builder: (context) => SingleChildScrollView(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: Container(
-                child: FoodItemFormWidget(),
-              ),
-            ),
+            itemCount: customerOrders.length,
+            itemBuilder: (context, index) => CustomerOrderWidget(),
           );
         },
       ),

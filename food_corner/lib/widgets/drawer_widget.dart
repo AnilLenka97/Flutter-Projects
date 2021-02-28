@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../screens/seller/food_setting_screen.dart';
 import '../screens/profile_screen.dart';
 import '../screens/consumer/cart_screen.dart';
 import '../screens/consumer/order_screen.dart';
@@ -9,12 +10,14 @@ class DrawerWidget extends StatelessWidget {
   final userEmail;
   final bool isOrderLinkAvailable;
   final bool isCartLinkAvailable;
+  final bool isFoodSettingAvailable;
 
   DrawerWidget({
     @required this.userName,
     @required this.userEmail,
     this.isCartLinkAvailable = false,
     this.isOrderLinkAvailable = false,
+    this.isFoodSettingAvailable = false,
   });
 
   @override
@@ -79,6 +82,21 @@ class DrawerWidget extends StatelessWidget {
               Navigator.pushNamed(context, ProfileScreen.id);
             },
           ),
+          if (isFoodSettingAvailable)
+            ListTile(
+              dense: true,
+              leading: Icon(Icons.settings),
+              title: Text(
+                'Food Setting',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, FoodSettingScreen.id);
+              },
+            ),
           if (isOrderLinkAvailable)
             ListTile(
               dense: true,

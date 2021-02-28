@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:food_corner/services/firebase_api.dart';
-import 'package:food_corner/widgets/spinner_widget.dart';
+import '../../services/firebase_api.dart';
+import '../../widgets/spinner_widget.dart';
 
 class FoodItemFormWidget extends StatefulWidget {
   @override
@@ -71,7 +71,7 @@ class _FoodItemFormWidgetState extends State<FoodItemFormWidget> {
                 key: ValueKey('name'),
                 keyboardType: TextInputType.name,
                 validator: (value) {
-                  if (value.isEmpty) {
+                  if (value.trim().isEmpty) {
                     return 'Please enter food name.';
                   }
                   return null;
@@ -87,7 +87,7 @@ class _FoodItemFormWidgetState extends State<FoodItemFormWidget> {
                 key: ValueKey('imgPath'),
                 keyboardType: TextInputType.url,
                 validator: (value) {
-                  if (value.isEmpty) {
+                  if (value.trim().isEmpty) {
                     return 'Please enter food image url.';
                   }
                   return null;

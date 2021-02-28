@@ -108,6 +108,18 @@ class FirebaseApi {
         .snapshots();
   }
 
+  Stream<QuerySnapshot> getCustomerOrdersSnapshotsInDescOrder() {
+    return cloudDb
+        .collection('users')
+        .doc(user.uid)
+        .collection('orders-received')
+        .orderBy(
+          'orderTime',
+          descending: true,
+        )
+        .snapshots();
+  }
+
   Stream<QuerySnapshot> getFoodItemSnapshots() {
     return cloudDb.collection('food-items').snapshots();
   }
