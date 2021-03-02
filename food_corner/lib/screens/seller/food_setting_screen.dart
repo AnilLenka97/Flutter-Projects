@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/firebase_api.dart';
-import '../../widgets/seller/food_item_form_widget.dart';
+import '../../widgets/seller/add_food_item_form_widget.dart';
 import '../../widgets/seller/food_item_widget.dart';
 import '../../widgets/spinner_widget.dart';
 

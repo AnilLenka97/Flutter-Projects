@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:food_corner/models/food_item_model.dart';
+import 'package:food_corner/models/order_model.dart';
 import 'package:food_corner/models/user_model.dart';
 
 class FirebaseApi {
@@ -82,12 +83,12 @@ class FirebaseApi {
         .snapshots();
   }
 
-  void removeItemFromCart(String foodItemId) {
+  removeItemFromCart(String cartItemId) {
     cloudDb
         .collection('users')
         .doc(user.uid)
         .collection('cart-items')
-        .doc(foodItemId)
+        .doc(cartItemId)
         .delete()
         .then((value) => print("Item Deleted from Cart"))
         .catchError(
@@ -95,7 +96,7 @@ class FirebaseApi {
   }
 
   // adding order data to firebase database
-  void addItemToOrderHistory({
+  addItemToOrderHistory({
     String foodItemId,
     int noOfItems,
   }) {
@@ -110,6 +111,26 @@ class FirebaseApi {
         })
         .then((value) => print("Order Added"))
         .catchError((error) => print("Failed to add Order: $error"));
+  }
+
+  addOrderToSellerOrderList({
+    @required OrderModel orderModel,
+    @required String sellerId,
+  }) {
+    print('Order processing...');
+    cloudDb
+        .collection('users')
+        .doc(sellerId)
+        .collection('orders-received')
+        .add({
+          'consumerId': user.uid,
+          'foodItemId': orderModel.foodItemId,
+          'isDelivered': false,
+          'noOfItems': orderModel.noOfItems,
+          'orderTime': Timestamp.now(),
+        })
+        .then((value) => print("Order Added to seller"))
+        .catchError((error) => print("Failed to add Order to seller: $error"));
   }
 
   Stream<QuerySnapshot> getOrderHistorySnapshotsInDescOrder() {
@@ -162,6 +183,7 @@ class FirebaseApi {
     await cloudDb
         .collection('food-items')
         .add({
+          'sellerId': user.uid,
           'title': title,
           'imgPath': imgPath,
           'price': price,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:food_corner/models/order_model.dart';
 import '../../services/firebase_api.dart';
 import '../../widgets/empty_page_with_button.dart';
 import '../../widgets/spinner_widget.dart';
@@ -14,16 +15,26 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  FirebaseApi _firebaseApi = FirebaseApi();
   var cartData;
+  List<String> sellerIdList = [];
 
   //adding order data to database
-  void initiateOrders() {
-    for (var data in cartData) {
-      FirebaseApi().addItemToOrderHistory(
-        noOfItems: data['noOfItems'],
-        foodItemId: data.id,
+  void initiateOrders() async {
+    int index = 0;
+    for (var cartItem in cartData) {
+      await _firebaseApi.addItemToOrderHistory(
+        noOfItems: cartItem['noOfItems'],
+        foodItemId: cartItem.id,
       );
-      FirebaseApi().removeItemFromCart(data.id);
+      await _firebaseApi.addOrderToSellerOrderList(
+        orderModel: OrderModel(
+          foodItemId: cartItem.id,
+          noOfItems: cartItem['noOfItems'],
+        ),
+        sellerId: sellerIdList[index++],
+      );
+      await _firebaseApi.removeItemFromCart(cartItem.id);
     }
     Navigator.pop(context);
     showDialog(
@@ -52,7 +63,7 @@ class _CartScreenState extends State<CartScreen> {
       ),
       backgroundColor: Theme.of(context).backgroundColor,
       body: StreamBuilder(
-        stream: FirebaseApi().getCartItemSnapshots(),
+        stream: _firebaseApi.getCartItemSnapshots(),
         builder: (ctx, cartFoodSnapshots) {
           if (cartFoodSnapshots.connectionState == ConnectionState.waiting)
             return Spinner();
@@ -67,7 +78,7 @@ class _CartScreenState extends State<CartScreen> {
               },
             );
           return StreamBuilder(
-            stream: FirebaseApi().getFoodItemSnapshots(),
+            stream: _firebaseApi.getFoodItemSnapshots(),
             builder: (ctx, foodItemSnapshots) {
               if (foodItemSnapshots.connectionState == ConnectionState.waiting)
                 return Spinner();
@@ -78,6 +89,7 @@ class _CartScreenState extends State<CartScreen> {
                 for (var foodItem in foodItemDocs) {
                   if (cartItem.id == foodItem.id) {
                     cartItemNumberList.add(cartItem['noOfItems']);
+                    sellerIdList.add(foodItem['sellerId']);
                     cartList.add(foodItem);
                   }
                 }
@@ -99,7 +111,7 @@ class _CartScreenState extends State<CartScreen> {
       bottomNavigationBar: Container(
         height: 45,
         child: StreamBuilder(
-          stream: FirebaseApi().getCartItemSnapshots(),
+          stream: _firebaseApi.getCartItemSnapshots(),
           builder: (ctx, cartFoodSnapshots) {
             if (cartFoodSnapshots.connectionState == ConnectionState.waiting)
               return Spinner();
