@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:food_corner/utilities/date_formatter.dart';
 import 'package:intl/intl.dart';
 
 class OrderWidget extends StatelessWidget {
@@ -74,7 +75,7 @@ class OrderWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Ordered: ${DateFormat.yMMMMEEEEd().format(orderTime.toDate())}',
+                    'Ordered: ${DateFormatter.timeAgoSinceDate(orderTime.toDate())}',
                     style: TextStyle(color: Colors.black54),
                   ),
                 ],
