@@ -1,23 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:food_corner/services/firebase_api.dart';
-import 'package:food_corner/widgets/spinner_widget.dart';
+import 'package:food_corner/models/order_model.dart';
+import 'package:food_corner/utilities/date_formatter.dart';
+import 'package:food_corner/widgets/order_details_pop_up_dialog.dart';
+import '../../services/firebase_api.dart';
+import '../../widgets/spinner_widget.dart';
 import '../../models/food_item_model.dart';
 import '../../models/user_model.dart';
 
 class CustomerOrderWidget extends StatefulWidget {
-  final String consumerId;
-  final String foodItemId;
-  final int noOfItems;
-  final bool isDelivered;
-  final Timestamp orderTime;
-
+  final OrderModel orderModel;
   const CustomerOrderWidget({
-    @required this.consumerId,
-    @required this.foodItemId,
-    @required this.noOfItems,
-    @required this.isDelivered,
-    @required this.orderTime,
+    @required this.orderModel,
   });
 
   @override
@@ -32,10 +25,10 @@ class _CustomerOrderWidgetState extends State<CustomerOrderWidget> {
 
   getRequiredData() async {
     userModel = await _firebaseApi.getConsumerInfo(
-      consumerId: widget.consumerId,
+      consumerId: widget.orderModel.consumerId,
     );
     foodItemModel = await _firebaseApi.getFoodItemInfo(
-      foodItemId: widget.foodItemId,
+      foodItemId: widget.orderModel.foodItemId,
     );
     if (!mounted) return;
     setState(() {
@@ -54,31 +47,83 @@ class _CustomerOrderWidgetState extends State<CustomerOrderWidget> {
     if (_isLoading) return Spinner();
     return InkWell(
       onTap: () {
-        print('Tapped');
+        showDialog(
+          context: context,
+          builder: (context) => OrderDialog(
+            orderModel: widget.orderModel,
+            userModel: userModel,
+            foodItemModel: foodItemModel,
+          ),
+        );
       },
       child: Card(
-        child: Row(
-          children: [
-            Column(
-              children: [
-                Text(foodItemModel.foodTitle),
-                Text('Quantity: ${widget.noOfItems}'),
-              ],
-            ),
-            Column(
-              children: [
-                Text('Order Time:'),
-                Text(
-                  widget.orderTime.toString(),
-                  softWrap: true,
-                  overflow: TextOverflow.fade,
+        color: widget.orderModel.isDelivered
+            ? Colors.green[100]
+            : Colors.green[300],
+        elevation: 5.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(5.0),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 3,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      foodItemModel.foodTitle,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      softWrap: true,
+                      overflow: TextOverflow.fade,
+                    ),
+                    Text(
+                      'Quantity: ${widget.orderModel.noOfItems}',
+                      style: TextStyle(
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            Expanded(
-              child: Container(),
-            ),
-          ],
+              ),
+              Expanded(
+                flex: 3,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Order Time:'),
+                    Text(
+                      DateFormatter.timeAgoSinceDate(
+                          widget.orderModel.orderTime),
+                      softWrap: true,
+                      overflow: TextOverflow.fade,
+                      style: TextStyle(
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(5.0),
+                  child: Image.network(
+                    foodItemModel.foodImgPath,
+                    fit: BoxFit.fill,
+                    height: 50,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -198,4 +198,22 @@ class FirebaseApi {
         .then((value) => print("Price Updated"))
         .catchError((error) => print("Failed to update price: $error"));
   }
+
+  Future<bool> updateOrderDelivery({
+    @required String orderId,
+  }) async {
+    bool result = false;
+    await cloudDb
+        .collection('users')
+        .doc(user.uid)
+        .collection('orders-received')
+        .doc(orderId)
+        .update({
+      'isDelivered': true,
+    }).then((value) {
+      result = true;
+      return print("Order Delivery Updated");
+    }).catchError((error) => print("Failed to update Order Delivery: $error"));
+    return result;
+  }
 }

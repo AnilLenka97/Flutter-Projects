@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_corner/models/order_model.dart';
 import '../../widgets/seller/customer_order_widget.dart';
 import '../../widgets/spinner_widget.dart';
 import '../../services/firebase_api.dart';
@@ -48,13 +49,18 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
           final customerOrders = orderSnapshot.data.docs;
           return ListView.builder(
             itemCount: customerOrders.length,
-            itemBuilder: (context, index) => CustomerOrderWidget(
-              consumerId: customerOrders[index]['consumerId'],
-              foodItemId: customerOrders[index]['foodItemId'],
-              noOfItems: customerOrders[index]['noOfItems'],
-              isDelivered: customerOrders[index]['isDelivered'],
-              orderTime: customerOrders[index]['orderTime'],
-            ),
+            itemBuilder: (context, index) {
+              return CustomerOrderWidget(
+                orderModel: OrderModel(
+                  orderId: customerOrders[index].id,
+                  consumerId: customerOrders[index]['consumerId'],
+                  foodItemId: customerOrders[index]['foodItemId'],
+                  noOfItems: customerOrders[index]['noOfItems'],
+                  isDelivered: customerOrders[index]['isDelivered'],
+                  orderTime: customerOrders[index]['orderTime'].toDate(),
+                ),
+              );
+            },
           );
         },
       ),
