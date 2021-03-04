@@ -1,22 +1,19 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
-import '../../services/local_auth.dart';
-import '../../widgets/dialog_box_widget.dart';
+import '../../models/user_model.dart';
+import '../../services/push_notification_handler.dart';
 import '../../services/firebase_api.dart';
 import '../../widgets/spinner_widget.dart';
-import '../../widgets/food_item_widget.dart';
+import '../../widgets/consumer/food_item_widget.dart';
 import '../../widgets/drawer_widget.dart';
 import 'cart_screen.dart';
-import 'order_screen.dart';
 
 class ConsumerHomeScreen extends StatefulWidget {
   static const String id = 'ConsumerHomeScreen';
-  final String userEmail;
-  final String userName;
+  final UserModel user;
   ConsumerHomeScreen({
-    @required this.userEmail,
-    @required this.userName,
+    this.user,
   });
 
   @override
@@ -25,91 +22,18 @@ class ConsumerHomeScreen extends StatefulWidget {
 
 class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   FirebaseApi _firebaseApi = FirebaseApi();
-  String userEmail;
-  String userName;
-  int noOfCartItems = 0;
-  var cartItemCountProvider;
-  bool isBiometricsScanning = false;
   final firebaseMessage = FirebaseMessaging();
-
-  initializeLocalAuthAndPushNotification() async {
-    isBiometricsScanning = !LocalAuth.isLoggedInByUserIdAndPassword;
-    if (isBiometricsScanning) {
-      bool authResult = await LocalAuth.authenticate();
-      // if (!authResult) {
-      //   FirebaseApi().signOut();
-      //   return;
-      // }
-      if (!mounted) return;
-      // LocalAuth.isLoggedInByUserIdAndPassword = false;
-      setState(() {
-        isBiometricsScanning = !authResult;
-      });
-      pushNotificationConfigure();
-    }
-    pushNotificationConfigure();
-  }
-
-  static Future<dynamic> backgroundMessageHandler(
-      Map<String, dynamic> message) async {
-    if (message.containsKey('data')) {
-      final dynamic data = message['data'];
-      print(data);
-    }
-
-    if (message.containsKey('notification')) {
-      print('Notification Message');
-      final dynamic notification = message['notification'];
-      print(notification);
-    }
-  }
-
-  pushNotificationConfigure() async {
-    try {
-      firebaseMessage.configure(
-        onMessage: (msg) async {
-          await showDialog(
-            context: context,
-            builder: (context) {
-              return AlertWidget(
-                title: 'Title',
-              );
-            },
-          );
-          return;
-        },
-        onResume: (msg) async {
-          print('onResume: $msg');
-          await Navigator.pushNamed(context, OrderScreen.id);
-          return;
-        },
-        onLaunch: (msg) async {
-          print('onLaunch: $msg');
-          await Navigator.pushNamed(context, OrderScreen.id);
-          return;
-        },
-        onBackgroundMessage: backgroundMessageHandler,
-      );
-      firebaseMessage.getToken().then((token) {
-        FirebaseApi().updateDeviceToken(token);
-      });
-    } catch (err) {
-      print('firebaseMessagingError: $err');
-    }
-  }
 
   @override
   void initState() {
-    userEmail = widget.userEmail;
-    userName = widget.userName;
-    // initializeLocalAuthAndPushNotification();
+    PushNotificationHandler pushNotificationHandler =
+        PushNotificationHandler(context: context);
+    pushNotificationHandler.pushNotificationConfigure();
     super.initState();
-    // cartItemCountProvider = Provider.of<CartItemCount>(context, listen: false);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (isBiometricsScanning) return Spinner();
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -125,17 +49,12 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
             elevation: 3,
             animationType: BadgeAnimationType.fade,
             badgeColor: Colors.white70,
-            // badgeContent: Text(noOfItemsAddedToCart.toString()),
             child: IconButton(
               icon: Icon(Icons.shopping_cart),
               onPressed: () {
                 Navigator.pushNamed(context, CartScreen.id);
               },
             ),
-            // badgeContent: Consumer<CartItemCount>(
-            //   builder: (ctx, value, child) =>
-            //       Text(value.noOfCartItems.toString()),
-            // ),
             badgeContent: StreamBuilder(
               stream: _firebaseApi.getCartItemSnapshots(),
               builder: (ctx, cartItemSnapshot) {
@@ -150,8 +69,8 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
         ],
       ),
       drawer: DrawerWidget(
-        userEmail: userEmail,
-        userName: userName,
+        userName: widget.user.userName ?? '',
+        userEmail: widget.user.userEmail ?? '',
         isCartLinkAvailable: true,
         isOrderLinkAvailable: true,
       ),
@@ -162,11 +81,6 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
             return Spinner();
           }
           final cartItemDocs = cartItemSnapshot.data.docs;
-
-          // setState(() {
-          //   noOfCartItems = cartItemDocs.length;
-          // });
-          //cartItemCountProvider.changeCartItemCount(cartItemDocs.length);
 
           return StreamBuilder(
             stream: _firebaseApi.getFoodItemSnapshots(),
@@ -191,7 +105,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                 // delete cartItem from cart which is not available
                 for (var cartItem in cartItemDocs) {
                   if (cartItem.id == foodItem.id && !foodItem['isAvailable'])
-                    FirebaseApi().removeItemFromCart(foodItem.id);
+                    _firebaseApi.removeItemFromCart(foodItem.id);
                 }
               }
               return ListView.builder(
