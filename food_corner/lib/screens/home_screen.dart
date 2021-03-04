@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_corner/services/local_auth.dart';
 import './consumer/home_screen.dart';
 import './seller/home_screen.dart';
 import '../services/firebase_api.dart';
@@ -17,6 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String userEmail;
   String userName;
   String userRole;
+  bool isAuthenticationSuccessful = false;
 
   initializeHomeScreen() async {
     var userInfo = await _firebaseApi.getCurrentUserProfileInfo();
@@ -29,14 +31,34 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  initializeLocalAuthentication() async {
+    if (!LocalAuth.isLoggedInByUserIdAndPassword) {
+      bool authResult = await LocalAuth.authenticate();
+      // if (!authResult) {
+      //   FirebaseApi().signOut();
+      //   return;
+      // }
+      print('--------------------------------------------------$authResult');
+      if (!mounted) return;
+      setState(() {
+        isAuthenticationSuccessful = authResult;
+      });
+    } else
+      setState(() {
+        isAuthenticationSuccessful = true;
+      });
+  }
+
   @override
   void initState() {
+    // initializeLocalAuthentication();
     initializeHomeScreen();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    // if (_isLoading || !isAuthenticationSuccessful)
     if (_isLoading)
       return Scaffold(
         body: Column(
