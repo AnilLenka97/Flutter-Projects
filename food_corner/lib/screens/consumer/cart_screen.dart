@@ -40,9 +40,8 @@ class _CartScreenState extends State<CartScreen> {
     showDialog(
       context: context,
       builder: (context) {
-        return NotificationAlert(
+        return AlertWidget(
           title: 'Your Order(s) Placed Successfully',
-          message: 'Thank You!',
           actionWidget: FlatButton(
             child: Text('Goto Orders'),
             onPressed: () {

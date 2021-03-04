@@ -24,6 +24,7 @@ class ConsumerHomeScreen extends StatefulWidget {
 }
 
 class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
+  FirebaseApi _firebaseApi = FirebaseApi();
   String userEmail;
   String userName;
   int noOfCartItems = 0;
@@ -70,9 +71,8 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
           await showDialog(
             context: context,
             builder: (context) {
-              return NotificationAlert(
+              return AlertWidget(
                 title: 'Title',
-                message: 'This is a sample text.',
               );
             },
           );
@@ -137,7 +137,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
             //       Text(value.noOfCartItems.toString()),
             // ),
             badgeContent: StreamBuilder(
-              stream: FirebaseApi().getCartItemSnapshots(),
+              stream: _firebaseApi.getCartItemSnapshots(),
               builder: (ctx, cartItemSnapshot) {
                 return Text(
                   cartItemSnapshot.hasData
@@ -156,7 +156,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
         isOrderLinkAvailable: true,
       ),
       body: StreamBuilder(
-        stream: FirebaseApi().getCartItemSnapshots(),
+        stream: _firebaseApi.getCartItemSnapshots(),
         builder: (ctx, cartItemSnapshot) {
           if (cartItemSnapshot.connectionState == ConnectionState.waiting) {
             return Spinner();
@@ -169,7 +169,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
           //cartItemCountProvider.changeCartItemCount(cartItemDocs.length);
 
           return StreamBuilder(
-            stream: FirebaseApi().getFoodItemSnapshots(),
+            stream: _firebaseApi.getFoodItemSnapshots(),
             builder: (ctx, foodSnapshots) {
               if (foodSnapshots.connectionState == ConnectionState.waiting) {
                 return Spinner();

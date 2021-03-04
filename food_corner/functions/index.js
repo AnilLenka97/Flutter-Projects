@@ -4,7 +4,34 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 const db = admin.firestore();
 
-exports.myFunctions = functions.firestore
+exports.getAllUsers = functions.https.onCall((_, __) => {
+  return admin.auth().listUsers()
+      .then((users) => {
+        const userList = [];
+        users.users.forEach((user) => {
+          userList.push({
+            "uid": user.uid,
+          });
+        });
+        return userList;
+      })
+      .catch((err) => {
+        console.log("Error listing users: ", err);
+      });
+});
+
+exports.deleteUser = functions.https.onCall((uid, _) => {
+  return admin.auth().deleteUser(uid)
+      .then(() => {
+        return true;
+      })
+      .catch((err) => {
+        console.log("Error deleting user: ", err);
+        return false;
+      });
+});
+
+exports.orderPlacedPushNotificationFn = functions.firestore
     .document("users/{userId}/order-history/{orderId}")
     .onCreate((snapshot, context)=>{
       try {
@@ -38,7 +65,7 @@ exports.myFunctions = functions.firestore
                   });
             });
       } catch (err) {
-        console.log(err);
+        console.log("Error sending push-notification: ", err);
       }
       return;
     });

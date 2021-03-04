@@ -24,8 +24,8 @@ class _CustomerOrderWidgetState extends State<CustomerOrderWidget> {
   FoodItemModel foodItemModel;
 
   getRequiredData() async {
-    userModel = await _firebaseApi.getConsumerInfo(
-      consumerId: widget.orderModel.consumerId,
+    userModel = await _firebaseApi.getUserInfo(
+      userId: widget.orderModel.consumerId,
     );
     foodItemModel = await _firebaseApi.getFoodItemInfo(
       foodItemId: widget.orderModel.foodItemId,

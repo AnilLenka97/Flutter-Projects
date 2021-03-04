@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
     userName = userInfo['name'];
     userRole = userInfo['role'];
     userEmail = _firebaseApi.user.email;
+    if (!mounted) return;
     setState(() {
       _isLoading = false;
     });

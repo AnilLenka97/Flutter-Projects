@@ -33,10 +33,13 @@ class FirebaseApi {
     return userProfileInfo;
   }
 
-  getConsumerInfo({String consumerId}) async {
+  getUserInfo({String userId}) async {
+    print('call to : $userId');
+    if (userId == null) userId = user.uid;
     UserModel userModel;
-    await cloudDb.collection('users').doc(consumerId).get().then((value) {
+    await cloudDb.collection('users').doc(userId).get().then((value) {
       userModel = UserModel(
+        userId: userId,
         userEmail: value.data()['email'],
         userName: value.data()['name'],
         userRole: value.data()['role'],
@@ -45,6 +48,13 @@ class FirebaseApi {
       );
     });
     return userModel;
+  }
+
+  deleteUserData({String userId}) async {
+    return await cloudDb.collection('users').doc(userId)
+      ..delete()
+          .then((_) => print("User Data Deleted Successfully"))
+          .catchError((error) => print("Failed to delete user data: $error"));
   }
 
   Future updateUserProfileInfo({

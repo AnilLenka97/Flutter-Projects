@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class NotificationAlert extends StatelessWidget {
+class AlertWidget extends StatelessWidget {
   final String title;
-  final String message;
   final Widget actionWidget;
-  NotificationAlert({
+  final String defaultActionButtonTitle;
+  AlertWidget({
     @required this.title,
-    @required this.message,
     this.actionWidget,
+    this.defaultActionButtonTitle = 'Ok',
   });
   @override
   Widget build(BuildContext context) {
@@ -15,13 +15,13 @@ class NotificationAlert extends StatelessWidget {
       backgroundColor: Colors.white,
       elevation: 7,
       title: Text(title),
-      content: SingleChildScrollView(
-        child: Text(message),
-      ),
+      content: SingleChildScrollView(),
       actions: [
         actionWidget,
-        FlatButton(
-          child: Text('Close'),
+        RaisedButton(
+          color: Colors.green,
+          textColor: Colors.white,
+          child: Text(defaultActionButtonTitle),
           onPressed: () {
             Navigator.of(context).pop();
           },

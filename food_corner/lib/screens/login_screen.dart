@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
           'name': name,
           'floorNo': floorNo,
           'cubicleNo': cubicleNo,
-          'role': 'user',
+          'role': 'consumer',
         });
       }
     } catch (err) {
