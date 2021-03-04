@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:food_corner/models/order_model.dart';
+import '../../models/order_model.dart';
 import '../../services/firebase_api.dart';
 import '../../widgets/empty_page_with_button.dart';
 import '../../widgets/spinner_widget.dart';
 import '../../widgets/dialog_box_widget.dart';
-import '../../widgets/cart_widget.dart';
+import '../../widgets/consumer/cart_widget.dart';
 import 'order_screen.dart';
 
 class CartScreen extends StatefulWidget {

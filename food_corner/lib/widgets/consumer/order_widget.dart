@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:food_corner/utilities/date_formatter.dart';
-import 'package:intl/intl.dart';
+import '../../utilities/date_formatter.dart';
 
 class OrderWidget extends StatelessWidget {
   final String title;

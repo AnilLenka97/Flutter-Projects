@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:food_corner/models/order_model.dart';
+import '../../models/user_model.dart';
+import '../../services/push_notification_handler.dart';
+import '../../models/order_model.dart';
 import '../../widgets/seller/customer_order_widget.dart';
 import '../../widgets/spinner_widget.dart';
 import '../../services/firebase_api.dart';
@@ -7,11 +9,9 @@ import '../../widgets/drawer_widget.dart';
 
 class SellerHomeScreen extends StatefulWidget {
   static const String id = 'SellerHomeScreen';
-  final String userEmail;
-  final String userName;
+  final UserModel user;
   SellerHomeScreen({
-    @required this.userEmail,
-    @required this.userName,
+    this.user,
   });
   @override
   _SellerHomeScreenState createState() => _SellerHomeScreenState();
@@ -19,14 +19,12 @@ class SellerHomeScreen extends StatefulWidget {
 
 class _SellerHomeScreenState extends State<SellerHomeScreen> {
   FirebaseApi _firebaseApi = FirebaseApi();
-  String userEmail;
-  String userName;
-  bool _isLoading = true;
 
   @override
   void initState() {
-    userEmail = widget.userEmail;
-    userName = widget.userName;
+    PushNotificationHandler pushNotificationHandler =
+        PushNotificationHandler(context: context);
+    pushNotificationHandler.pushNotificationConfigure();
     super.initState();
   }
 
@@ -37,8 +35,8 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
         title: Text('Food Corner(Order List)'),
       ),
       drawer: DrawerWidget(
-        userName: userName,
-        userEmail: userEmail,
+        userName: widget.user.userName ?? '',
+        userEmail: widget.user.userEmail ?? '',
         isFoodSettingAvailable: true,
       ),
       body: StreamBuilder(

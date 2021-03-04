@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:food_corner/services/local_auth.dart';
+import '../models/user_model.dart';
+import '../services/local_auth.dart';
 import './consumer/home_screen.dart';
 import './seller/home_screen.dart';
 import '../services/firebase_api.dart';
@@ -14,17 +15,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   FirebaseApi _firebaseApi = FirebaseApi();
+  UserModel user;
   bool _isLoading = true;
-  String userEmail;
-  String userName;
   String userRole;
   bool isAuthenticationSuccessful = false;
 
   initializeHomeScreen() async {
-    var userInfo = await _firebaseApi.getCurrentUserProfileInfo();
-    userName = userInfo['name'];
-    userRole = userInfo['role'];
-    userEmail = _firebaseApi.user.email;
+    user = await _firebaseApi.getUserInfo();
+    userRole = user.userRole;
     if (!mounted) return;
     setState(() {
       _isLoading = false;
@@ -38,7 +36,6 @@ class _HomeScreenState extends State<HomeScreen> {
       //   FirebaseApi().signOut();
       //   return;
       // }
-      print('--------------------------------------------------$authResult');
       if (!mounted) return;
       setState(() {
         isAuthenticationSuccessful = authResult;
@@ -80,18 +77,15 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     else if (userRole == 'admin')
       return AdminHomeScreen(
-        userName: userName,
-        userEmail: userEmail,
+        user: user,
       );
     else if (userRole == 'seller')
       return SellerHomeScreen(
-        userName: userName,
-        userEmail: userEmail,
+        user: user,
       );
     else
       return ConsumerHomeScreen(
-        userName: userName,
-        userEmail: userEmail,
+        user: user,
       );
   }
 }

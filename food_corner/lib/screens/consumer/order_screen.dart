@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../widgets/empty_page_with_button.dart';
 import '../../services/firebase_api.dart';
-import '../../widgets/order_widget.dart';
+import '../../widgets/consumer/order_widget.dart';
 import '../../widgets/spinner_widget.dart';
 
 class OrderScreen extends StatelessWidget {

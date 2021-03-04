@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../widgets/spinner_widget.dart';
-import 'reusable_raised_button.dart';
 import '../models/floor_details.dart';
 
 class LoginForm extends StatefulWidget {
@@ -170,8 +169,15 @@ class _LoginFormState extends State<LoginForm> {
                 ),
                 if (widget.isLoading) Spinner(),
                 if (!widget.isLoading)
-                  ReusableRaisedButton(
-                    buttonTitle: _isLogin ? 'Login' : 'Register',
+                  RaisedButton(
+                    elevation: 8,
+                    child: Text(
+                      _isLogin ? 'Login' : 'Register',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    color: Color(0xFF007435),
+                    textColor: Colors.white,
+                    padding: EdgeInsets.all(10),
                     onPressed: () {
                       _trySubmit();
                     },

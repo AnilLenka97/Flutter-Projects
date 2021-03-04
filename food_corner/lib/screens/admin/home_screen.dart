@@ -1,16 +1,16 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:food_corner/models/user_model.dart';
-import 'package:food_corner/services/firebase_api.dart';
-import 'package:food_corner/widgets/admin/user_widget.dart';
-import 'package:food_corner/widgets/drawer_widget.dart';
-import 'package:food_corner/widgets/spinner_widget.dart';
+import '../../services/push_notification_handler.dart';
+import '../../widgets/admin/user_widget.dart';
+import '../../models/user_model.dart';
+import '../../widgets/spinner_widget.dart';
+import '../../services/firebase_api.dart';
+import '../../widgets/drawer_widget.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   static const String id = 'AdminHomeScreen';
-  final userName;
-  final userEmail;
-  AdminHomeScreen({@required this.userEmail, @required this.userName});
+  final UserModel user;
+  AdminHomeScreen({this.user});
 
   @override
   _AdminHomeScreenState createState() => _AdminHomeScreenState();
@@ -39,11 +39,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           .catchError((err) {
         print('Error: $err');
       });
-      print(userIdList.data);
-      int x = 1;
       for (var user in userIdList.data) {
         userList.add(await _firebaseApi.getUserInfo(userId: user['uid']));
-        print('loop....................${x++}');
       }
       if (!mounted) return;
       setState(() {
@@ -56,6 +53,9 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
   @override
   void initState() {
+    PushNotificationHandler pushNotificationHandler =
+        PushNotificationHandler(context: context);
+    pushNotificationHandler.pushNotificationConfigure();
     getAllUsers();
     super.initState();
   }
@@ -66,15 +66,9 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       appBar: AppBar(
         title: Text('Food Corner(Manage Users)'),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          print('clicked');
-          Navigator.of(context).build(context);
-        },
-      ),
       drawer: DrawerWidget(
-        userEmail: widget.userName,
-        userName: widget.userEmail,
+        userName: widget.user.userName ?? '',
+        userEmail: widget.user.userEmail ?? '',
         isFoodSettingAvailable: true,
       ),
       body: _isLoading

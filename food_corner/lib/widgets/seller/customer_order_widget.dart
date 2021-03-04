@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_corner/models/order_model.dart';
 import 'package:food_corner/utilities/date_formatter.dart';
-import 'package:food_corner/widgets/order_details_pop_up_dialog.dart';
+import 'file:///F:/Assignment1_flutter_mini_project/food_corner/lib/widgets/seller/order_details_pop_up_dialog.dart';
 import '../../services/firebase_api.dart';
 import '../../widgets/spinner_widget.dart';
 import '../../models/food_item_model.dart';

@@ -1,14 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:food_corner/screens/seller/food_setting_screen.dart';
-import 'package:provider/provider.dart';
+import './screens/seller/food_setting_screen.dart';
 import 'package:flutter/material.dart';
 import './services/local_auth.dart';
-import './services/provider.dart';
-import 'screens/consumer/cart_screen.dart';
-import 'screens/consumer/home_screen.dart';
+import './screens/consumer/cart_screen.dart';
+import './screens/consumer/home_screen.dart';
 import './screens/login_screen.dart';
-import 'screens/consumer/order_screen.dart';
+import './screens/consumer/order_screen.dart';
 import './screens/profile_screen.dart';
 import './widgets/spinner_widget.dart';
 import './screens/admin/home_screen.dart';
@@ -33,18 +31,15 @@ class MyApp extends StatelessWidget {
         accentColorBrightness: Brightness.dark,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: ChangeNotifierProvider<CartItemCount>(
-        create: (ctx) => CartItemCount(),
-        child: StreamBuilder(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, userSnapshot) {
-            if (userSnapshot.connectionState == ConnectionState.waiting)
-              return Spinner();
-            if (userSnapshot.hasData) return HomeScreen();
-            LocalAuth.isLoggedInByUserIdAndPassword = true;
-            return LoginScreen();
-          },
-        ),
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, userSnapshot) {
+          if (userSnapshot.connectionState == ConnectionState.waiting)
+            return Spinner();
+          if (userSnapshot.hasData) return HomeScreen();
+          LocalAuth.isLoggedInByUserIdAndPassword = true;
+          return LoginScreen();
+        },
       ),
       routes: {
         LoginScreen.id: (context) => LoginScreen(),

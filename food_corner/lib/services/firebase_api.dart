@@ -1,15 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
-import 'package:food_corner/models/food_item_model.dart';
-import 'package:food_corner/models/order_model.dart';
-import 'package:food_corner/models/user_model.dart';
+import '../models/food_item_model.dart';
+import '../models/order_model.dart';
+import '../models/user_model.dart';
 
 class FirebaseApi {
   var auth;
   var cloudDb;
   User user;
-  Map userProfileInfo;
 
   FirebaseApi() {
     this.auth = FirebaseAuth.instance;
@@ -21,20 +20,7 @@ class FirebaseApi {
     auth.signOut();
   }
 
-  getCurrentUserProfileInfo() async {
-    await cloudDb.collection('users').doc(user.uid).get().then((value) {
-      userProfileInfo = {
-        'name': value.data()['name'],
-        'floorNo': value.data()['floorNo'],
-        'cubicleNo': value.data()['cubicleNo'],
-        'role': value.data()['role'],
-      };
-    });
-    return userProfileInfo;
-  }
-
   getUserInfo({String userId}) async {
-    print('call to : $userId');
     if (userId == null) userId = user.uid;
     UserModel userModel;
     await cloudDb.collection('users').doc(userId).get().then((value) {

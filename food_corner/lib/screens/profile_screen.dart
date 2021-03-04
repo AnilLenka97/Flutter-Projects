@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../models/user_model.dart';
 import '../models/floor_details.dart';
 import '../services/firebase_api.dart';
 import '../widgets/spinner_widget.dart';
@@ -21,11 +22,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isEditModeActive = false;
 
   void getUserData() async {
-    _userEmail = FirebaseApi().user.email;
-    Map userProfileInfo = await FirebaseApi().getCurrentUserProfileInfo();
-    _userName = userProfileInfo['name'];
-    _userFloorNo = userProfileInfo['floorNo'];
-    _userCubicleNo = userProfileInfo['cubicleNo'];
+    UserModel user = await FirebaseApi().getUserInfo();
+    _userEmail = user.userEmail;
+    _userName = user.userName;
+    _userFloorNo = user.userFloorNo;
+    _userCubicleNo = user.userCubicleNo;
     if (!mounted) return;
     setState(() {
       _isLoading = false;
