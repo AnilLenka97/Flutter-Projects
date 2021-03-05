@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_corner/models/food_item_model.dart';
 import '../../services/firebase_api.dart';
 import '../../widgets/seller/add_food_item_form_widget.dart';
 import '../../widgets/seller/food_item_widget.dart';
@@ -29,11 +30,13 @@ class _FoodSettingScreenState extends State<FoodSettingScreen> {
           return ListView.builder(
             itemCount: foodItems.length,
             itemBuilder: (context, index) => FoodItem(
-              itemId: foodItems[index].id,
-              title: foodItems[index]['title'],
-              imgPath: foodItems[index]['imgPath'],
-              price: foodItems[index]['price'],
-              isAvailable: foodItems[index]['isAvailable'],
+              foodItem: FoodItemModel(
+                foodItemId: foodItems[index].id,
+                foodTitle: foodItems[index]['title'],
+                foodImgPath: foodItems[index]['imgPath'],
+                foodPrice: foodItems[index]['price'],
+                isAvailable: foodItems[index]['isAvailable'],
+              ),
             ),
           );
         },

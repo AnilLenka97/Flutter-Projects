@@ -76,7 +76,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           : ListView.builder(
               itemCount: userIdList.data.length,
               itemBuilder: (context, index) => UserWidget(
-                userModel: userList[index],
+                user: userList[index],
                 updateUserListScreen: updateUserListScreen,
               ),
             ),

@@ -1,16 +1,15 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:food_corner/models/user_model.dart';
-import 'package:food_corner/services/firebase_api.dart';
-import 'package:food_corner/widgets/spinner_widget.dart';
-
+import '../../models/user_model.dart';
+import '../../services/firebase_api.dart';
+import '../../widgets/spinner_widget.dart';
 import '../dialog_box_widget.dart';
 
 class UserWidget extends StatefulWidget {
-  final UserModel userModel;
+  final UserModel user;
   final Function updateUserListScreen;
 
-  const UserWidget({Key key, this.userModel, this.updateUserListScreen})
+  const UserWidget({Key key, this.user, this.updateUserListScreen})
       : super(key: key);
   @override
   _UserWidgetState createState() => _UserWidgetState();
@@ -48,7 +47,7 @@ class _UserWidgetState extends State<UserWidget> {
   @override
   Widget build(BuildContext context) {
     if (_isDeleting) return Spinner();
-    if (widget.userModel.userRole == 'admin') return Container();
+    if (widget.user.userRole == 'admin') return Container();
     return Card(
       color: Colors.green[200],
       child: Container(
@@ -62,14 +61,14 @@ class _UserWidgetState extends State<UserWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.userModel.userName,
+                    widget.user.userName,
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    'Role: ${widget.userModel.userRole}',
+                    'Role: ${widget.user.userRole}',
                     style: TextStyle(
                       color: Colors.black54,
                     ),
@@ -82,9 +81,9 @@ class _UserWidgetState extends State<UserWidget> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Email: ${widget.userModel.userEmail}'),
+                  Text('Email: ${widget.user.userEmail}'),
                   Text(
-                    'Id: ${widget.userModel.userId}',
+                    'Id: ${widget.user.userId}',
                     style: TextStyle(
                       color: Colors.black54,
                     ),
@@ -111,7 +110,7 @@ class _UserWidgetState extends State<UserWidget> {
                           child: Text('Yes, Continue!'),
                           onPressed: () {
                             Navigator.pop(context);
-                            deleteUser(widget.userModel.userId);
+                            deleteUser(widget.user.userId);
                             setState(() {
                               _isDeleting = true;
                             });

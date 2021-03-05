@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import '../../models/food_item_model.dart';
 import '../../models/order_model.dart';
 import '../../services/firebase_api.dart';
 import '../../widgets/empty_page_with_button.dart';
@@ -96,10 +97,12 @@ class _CartScreenState extends State<CartScreen> {
               return ListView.builder(
                 itemCount: cartList.length,
                 itemBuilder: (ctx, index) => CartWidget(
-                  foodItemId: cartList[index].id,
-                  foodName: cartList[index]['title'],
-                  imgPath: cartList[index]['imgPath'],
-                  price: cartList[index]['price'],
+                  foodItem: FoodItemModel(
+                    foodItemId: cartList[index].id,
+                    foodTitle: cartList[index]['title'],
+                    foodImgPath: cartList[index]['imgPath'],
+                    foodPrice: cartList[index]['price'],
+                  ),
                   noOfItems: cartItemNumberList[index],
                 ),
               );

@@ -1,19 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../models/food_item_model.dart';
 
 class FoodItemWidget extends StatefulWidget {
-  final String title;
-  final String imgPath;
-  final int price;
-  final String id;
+  final FoodItemModel foodItem;
   final bool isItemAddedToCart;
 
   FoodItemWidget({
-    @required this.title,
-    @required this.imgPath,
-    @required this.price,
-    @required this.id,
+    @required this.foodItem,
     @required this.isItemAddedToCart,
   });
   @override
@@ -65,7 +60,7 @@ class _FoodItemWidgetState extends State<FoodItemWidget> {
                   topRight: Radius.circular(10.0),
                 ),
                 child: Image.network(
-                  widget.imgPath,
+                  widget.foodItem.foodImgPath,
                   height: 250,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -88,7 +83,7 @@ class _FoodItemWidgetState extends State<FoodItemWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.title,
+                        widget.foodItem.foodTitle,
                         style: TextStyle(
                           fontSize: 25,
                           color: Colors.white,
@@ -97,7 +92,7 @@ class _FoodItemWidgetState extends State<FoodItemWidget> {
                         overflow: TextOverflow.fade,
                       ),
                       Text(
-                        '₹ ${widget.price}',
+                        '₹ ${widget.foodItem.foodPrice}',
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.white,
@@ -144,7 +139,7 @@ class _FoodItemWidgetState extends State<FoodItemWidget> {
               onPressed: _isClicked
                   ? null
                   : () {
-                      addFoodItemToCart(widget.id);
+                      addFoodItemToCart(widget.foodItem.foodItemId);
                       setState(() {
                         _isAddedToCart = true;
                         _isClicked = true;

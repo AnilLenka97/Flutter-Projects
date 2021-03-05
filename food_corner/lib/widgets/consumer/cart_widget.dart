@@ -1,19 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../models/food_item_model.dart';
 
 class CartWidget extends StatefulWidget {
-  final String foodItemId;
-  final String foodName;
-  final String imgPath;
-  final int price;
+  final FoodItemModel foodItem;
   final int noOfItems;
-  CartWidget(
-      {@required this.foodName,
-      @required this.imgPath,
-      @required this.foodItemId,
-      @required this.price,
-      @required this.noOfItems});
+  CartWidget({
+    @required this.foodItem,
+    @required this.noOfItems,
+  });
   @override
   _CartWidgetState createState() => _CartWidgetState();
 }
@@ -27,7 +23,7 @@ class _CartWidgetState extends State<CartWidget> {
     _users
         .doc(_userId)
         .collection('cart-items')
-        .doc(widget.foodItemId)
+        .doc(widget.foodItem.foodItemId)
         .set({
           'noOfItems': val,
         })
@@ -39,7 +35,7 @@ class _CartWidgetState extends State<CartWidget> {
     _users
         .doc(_userId)
         .collection('cart-items')
-        .doc(widget.foodItemId)
+        .doc(widget.foodItem.foodItemId)
         .delete()
         .then((value) => print("Food item Deleted"))
         .catchError((error) => print("Failed to delete the item: $error"));
@@ -66,7 +62,7 @@ class _CartWidgetState extends State<CartWidget> {
                   bottomLeft: Radius.circular(10.0),
                 ),
                 child: Image.network(
-                  widget.imgPath,
+                  widget.foodItem.foodImgPath,
                   height: 150,
                   fit: BoxFit.cover,
                 ),
@@ -81,7 +77,7 @@ class _CartWidgetState extends State<CartWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    widget.foodName,
+                    widget.foodItem.foodTitle,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -90,7 +86,7 @@ class _CartWidgetState extends State<CartWidget> {
                     overflow: TextOverflow.fade,
                   ),
                   Text(
-                    '₹ ${widget.price * widget.noOfItems}',
+                    '₹ ${widget.foodItem.foodPrice * widget.noOfItems}',
                     style: TextStyle(
                       color: Colors.green,
                       fontSize: 22,

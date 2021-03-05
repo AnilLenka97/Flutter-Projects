@@ -32,10 +32,10 @@ class _HomeScreenState extends State<HomeScreen> {
   initializeLocalAuthentication() async {
     if (!LocalAuth.isLoggedInByUserIdAndPassword) {
       bool authResult = await LocalAuth.authenticate();
-      // if (!authResult) {
-      //   FirebaseApi().signOut();
-      //   return;
-      // }
+      if (!authResult) {
+        FirebaseApi().signOut();
+        return;
+      }
       if (!mounted) return;
       setState(() {
         isAuthenticationSuccessful = authResult;
@@ -48,15 +48,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // initializeLocalAuthentication();
+    initializeLocalAuthentication();
     initializeHomeScreen();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // if (_isLoading || !isAuthenticationSuccessful)
-    if (_isLoading)
+    if (_isLoading || !isAuthenticationSuccessful)
       return Scaffold(
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,

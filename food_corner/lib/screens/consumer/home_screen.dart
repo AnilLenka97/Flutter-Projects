@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
+import 'package:food_corner/models/food_item_model.dart';
 import '../../models/user_model.dart';
 import '../../services/push_notification_handler.dart';
 import '../../services/firebase_api.dart';
@@ -111,10 +112,12 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
               return ListView.builder(
                 itemCount: availableFoodItemList.length,
                 itemBuilder: (ctx, index) => FoodItemWidget(
-                  title: availableFoodItemList[index]['title'],
-                  imgPath: availableFoodItemList[index]['imgPath'],
-                  price: availableFoodItemList[index]['price'],
-                  id: availableFoodItemList[index].id,
+                  foodItem: FoodItemModel(
+                    foodItemId: availableFoodItemList[index].id,
+                    foodTitle: availableFoodItemList[index]['title'],
+                    foodImgPath: availableFoodItemList[index]['imgPath'],
+                    foodPrice: availableFoodItemList[index]['price'],
+                  ),
                   isItemAddedToCart:
                       cartItemIdList.contains(availableFoodItemList[index].id)
                           ? true

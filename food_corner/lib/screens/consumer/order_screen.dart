@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../models/food_item_model.dart';
+import '../../models/order_model.dart';
 import '../../widgets/empty_page_with_button.dart';
 import '../../services/firebase_api.dart';
 import '../../widgets/consumer/order_widget.dart';
@@ -49,12 +51,15 @@ class OrderScreen extends StatelessWidget {
               return ListView.builder(
                 itemCount: orderedFoodItemList.length,
                 itemBuilder: (ctx, index) => OrderWidget(
-                  title: orderedFoodItemList[index]['title'],
-                  imgPath: orderedFoodItemList[index]['imgPath'],
-                  noOfItems: orderedFoodDocs[index]['noOfItems'],
-                  totalCost: orderedFoodItemList[index]['price'] *
-                      orderedFoodDocs[index]['noOfItems'],
-                  orderTime: orderedFoodDocs[index]['orderTime'],
+                  foodItem: FoodItemModel(
+                    foodTitle: orderedFoodItemList[index]['title'],
+                    foodImgPath: orderedFoodItemList[index]['imgPath'],
+                    foodPrice: orderedFoodItemList[index]['price'],
+                  ),
+                  order: OrderModel(
+                    noOfItems: orderedFoodDocs[index]['noOfItems'],
+                    orderTime: orderedFoodDocs[index]['orderTime'].toDate(),
+                  ),
                 ),
               );
             },

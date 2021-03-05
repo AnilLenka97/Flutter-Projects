@@ -1,4 +1,5 @@
 class FoodItemModel {
+  final String foodItemId;
   final String foodTitle;
   final String foodImgPath;
   final int foodPrice;
@@ -6,6 +7,7 @@ class FoodItemModel {
   final String sellerId;
 
   FoodItemModel({
+    this.foodItemId,
     this.foodTitle,
     this.foodImgPath,
     this.foodPrice,

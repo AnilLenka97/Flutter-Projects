@@ -1,22 +1,14 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../models/food_item_model.dart';
 import '../../services/firebase_api.dart';
 import '../spinner_widget.dart';
 
 class FoodItem extends StatefulWidget {
-  final String itemId;
-  final String imgPath;
-  final String title;
-  final int price;
-  final bool isAvailable;
+  final FoodItemModel foodItem;
   FoodItem({
-    @required this.itemId,
-    @required this.imgPath,
-    @required this.title,
-    @required this.price,
-    @required this.isAvailable,
+    @required this.foodItem,
   });
 
   @override
@@ -33,7 +25,7 @@ class _FoodItemState extends State<FoodItem> {
 
   changeAvailability(bool val) async {
     await _firebaseApi.updateFoodItemAvailability(
-      itemId: widget.itemId,
+      itemId: widget.foodItem.foodItemId,
       isAvailable: val,
     );
     setState(() {
@@ -44,7 +36,7 @@ class _FoodItemState extends State<FoodItem> {
 
   changeItemPrice(int val) async {
     await _firebaseApi.updateFoodItemPrice(
-      itemId: widget.itemId,
+      itemId: widget.foodItem.foodItemId,
       price: val,
     );
     setState(() {
@@ -55,8 +47,8 @@ class _FoodItemState extends State<FoodItem> {
 
   @override
   void initState() {
-    _isAvailable = widget.isAvailable;
-    _price = widget.price;
+    _isAvailable = widget.foodItem.isAvailable;
+    _price = widget.foodItem.foodPrice;
     super.initState();
   }
 
@@ -80,7 +72,7 @@ class _FoodItemState extends State<FoodItem> {
                   bottomLeft: Radius.circular(10.0),
                 ),
                 child: Image.network(
-                  widget.imgPath,
+                  widget.foodItem.foodImgPath,
                   height: 150,
                   fit: BoxFit.cover,
                 ),
@@ -96,7 +88,7 @@ class _FoodItemState extends State<FoodItem> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Text(
-                            widget.title,
+                            widget.foodItem.foodTitle,
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,

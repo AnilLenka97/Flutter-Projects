@@ -1,19 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:food_corner/models/food_item_model.dart';
+import 'package:food_corner/models/order_model.dart';
 import '../../utilities/date_formatter.dart';
 
 class OrderWidget extends StatelessWidget {
-  final String title;
-  final String imgPath;
-  final int noOfItems;
-  final int totalCost;
-  final Timestamp orderTime;
+  final FoodItemModel foodItem;
+  final OrderModel order;
   OrderWidget({
-    @required this.title,
-    @required this.imgPath,
-    @required this.noOfItems,
-    @required this.totalCost,
-    @required this.orderTime,
+    @required this.order,
+    @required this.foodItem,
   });
   @override
   Widget build(BuildContext context) {
@@ -35,7 +30,7 @@ class OrderWidget extends StatelessWidget {
                   bottomLeft: Radius.circular(10.0),
                 ),
                 child: Image.network(
-                  imgPath,
+                  foodItem.foodImgPath,
                   height: 150,
                   fit: BoxFit.cover,
                 ),
@@ -50,7 +45,7 @@ class OrderWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    title,
+                    foodItem.foodTitle,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -59,14 +54,14 @@ class OrderWidget extends StatelessWidget {
                     overflow: TextOverflow.fade,
                   ),
                   Text(
-                    '₹ $totalCost',
+                    '₹ ${foodItem.foodPrice * order.noOfItems}',
                     style: TextStyle(
                       color: Colors.green,
                       fontSize: 22,
                     ),
                   ),
                   Text(
-                    'No of items : $noOfItems',
+                    'No of items : ${order.noOfItems}',
                     style: TextStyle(
                       color: Colors.black54,
                       fontSize: 16,
@@ -74,7 +69,7 @@ class OrderWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Ordered: ${DateFormatter.timeAgoSinceDate(orderTime.toDate())}',
+                    'Ordered: ${DateFormatter.timeAgoSinceDate(order.orderTime)}',
                     style: TextStyle(color: Colors.black54),
                   ),
                 ],
