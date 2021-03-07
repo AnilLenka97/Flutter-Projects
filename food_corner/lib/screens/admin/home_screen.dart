@@ -1,5 +1,5 @@
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
+import '../../services/firebase_functions.dart';
 import '../../services/push_notification_handler.dart';
 import '../../widgets/admin/user_widget.dart';
 import '../../models/user_model.dart';
@@ -17,7 +17,6 @@ class AdminHomeScreen extends StatefulWidget {
 }
 
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
-  final _firebaseFunction = FirebaseFunctions.instance;
   final FirebaseApi _firebaseApi = FirebaseApi();
   bool _isLoading = true;
   List<UserModel> userList = [];
@@ -33,12 +32,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       _isLoading = true;
     });
     try {
-      userIdList = await _firebaseFunction
-          .httpsCallable('getAllUsers')
-          .call()
-          .catchError((err) {
-        print('Error: $err');
-      });
+      userIdList = await FirebaseCloudFunctions.callGetAllUsers();
       for (var user in userIdList.data) {
         userList.add(await _firebaseApi.getUserInfo(userId: user['uid']));
       }

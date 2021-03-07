@@ -49,8 +49,9 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
             itemCount: customerOrders.length,
             itemBuilder: (context, index) {
               return CustomerOrderWidget(
-                orderModel: OrderModel(
+                order: OrderModel(
                   orderId: customerOrders[index].id,
+                  consumerOrderId: customerOrders[index]['consumerOrderId'],
                   consumerId: customerOrders[index]['consumerId'],
                   foodItemId: customerOrders[index]['foodItemId'],
                   noOfItems: customerOrders[index]['noOfItems'],

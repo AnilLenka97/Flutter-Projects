@@ -79,34 +79,56 @@ class FirebaseApi {
         .snapshots();
   }
 
-  removeItemFromCart(String cartItemId) {
-    cloudDb
+// update the no of items in cart section
+  updateNoOfItemsInCart({
+    int noOfItems,
+    String foodItemId,
+  }) async {
+    await cloudDb
         .collection('users')
         .doc(user.uid)
         .collection('cart-items')
-        .doc(cartItemId)
+        .doc(foodItemId)
+        .update({
+          'noOfItems': noOfItems,
+        })
+        .then((value) => print("Cart count updated."))
+        .catchError((error) => print("Failed to update cart count: $error"));
+  }
+
+// delete/remove food item form cart
+  deleteItemFromCart(String foodItemId) async {
+    await cloudDb
+        .collection('users')
+        .doc(user.uid)
+        .collection('cart-items')
+        .doc(foodItemId)
         .delete()
         .then((value) => print("Item Deleted from Cart"))
         .catchError(
             (error) => print("Failed to delete item from Cart: $error"));
   }
 
-  // adding order data to firebase database
+  // adding order data to firebase database and returning the newly created order id
   addItemToOrderHistory({
     String foodItemId,
     int noOfItems,
-  }) {
-    cloudDb
+  }) async {
+    String orderId;
+    await cloudDb
         .collection('users')
         .doc(user.uid)
         .collection('order-history')
         .add({
-          'foodItemId': foodItemId,
-          'noOfItems': noOfItems,
-          'orderTime': Timestamp.now(),
-        })
-        .then((value) => print("Order Added"))
-        .catchError((error) => print("Failed to add Order: $error"));
+      'foodItemId': foodItemId,
+      'noOfItems': noOfItems,
+      'isDelivered': false,
+      'orderTime': Timestamp.now(),
+    }).then((value) {
+      orderId = value.id;
+      print("Order Added");
+    }).catchError((error) => print("Failed to add Order: $error"));
+    return orderId;
   }
 
   addOrderToSellerOrderList({
@@ -120,6 +142,7 @@ class FirebaseApi {
         .collection('orders-received')
         .add({
           'consumerId': user.uid,
+          'consumerOrderId': orderModel.consumerOrderId,
           'foodItemId': orderModel.foodItemId,
           'isDelivered': false,
           'noOfItems': orderModel.noOfItems,
@@ -217,20 +240,31 @@ class FirebaseApi {
         .catchError((error) => print("Failed to update price: $error"));
   }
 
-  Future<bool> updateOrderDelivery({
-    @required String orderId,
+  Future<bool> confirmOrderDelivery({
+    @required OrderModel order,
   }) async {
     bool result = false;
+    print('order delivery processing...');
     await cloudDb
         .collection('users')
         .doc(user.uid)
         .collection('orders-received')
-        .doc(orderId)
+        .doc(order.orderId)
         .update({
       'isDelivered': true,
-    }).then((value) {
-      result = true;
-      return print("Order Delivery Updated");
+    }).then((value) async {
+      await cloudDb
+          .collection('users')
+          .doc(order.consumerId)
+          .collection('order-history')
+          .doc(order.consumerOrderId)
+          .update({
+        'isDelivered': true,
+      }).then((_) async {
+        result = true;
+        return print("Order Delivery Updated");
+      }).catchError(
+              (error) => print("Failed to update Order Delivery: $error"));
     }).catchError((error) => print("Failed to update Order Delivery: $error"));
     return result;
   }

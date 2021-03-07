@@ -20,22 +20,24 @@ class _CartScreenState extends State<CartScreen> {
   var cartData;
   List<String> sellerIdList = [];
 
-  //adding order data to database
+  //adding order data to both user and seller database
   void initiateOrders() async {
     int index = 0;
     for (var cartItem in cartData) {
-      await _firebaseApi.addItemToOrderHistory(
+      String newOrderId = await _firebaseApi.addItemToOrderHistory(
         noOfItems: cartItem['noOfItems'],
         foodItemId: cartItem.id,
       );
-      await _firebaseApi.addOrderToSellerOrderList(
-        orderModel: OrderModel(
-          foodItemId: cartItem.id,
-          noOfItems: cartItem['noOfItems'],
-        ),
-        sellerId: sellerIdList[index++],
-      );
-      await _firebaseApi.removeItemFromCart(cartItem.id);
+      if (newOrderId.isNotEmpty)
+        await _firebaseApi.addOrderToSellerOrderList(
+          orderModel: OrderModel(
+            foodItemId: cartItem.id,
+            consumerOrderId: newOrderId,
+            noOfItems: cartItem['noOfItems'],
+          ),
+          sellerId: sellerIdList[index++],
+        );
+      await _firebaseApi.deleteItemFromCart(cartItem.id);
     }
     Navigator.pop(context);
     showDialog(

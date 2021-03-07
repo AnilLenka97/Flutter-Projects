@@ -106,7 +106,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                 // delete cartItem from cart which is not available
                 for (var cartItem in cartItemDocs) {
                   if (cartItem.id == foodItem.id && !foodItem['isAvailable'])
-                    _firebaseApi.removeItemFromCart(foodItem.id);
+                    _firebaseApi.deleteItemFromCart(foodItem.id);
                 }
               }
               return ListView.builder(

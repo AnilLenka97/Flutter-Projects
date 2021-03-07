@@ -19,6 +19,7 @@ class OrderWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         elevation: 7,
+        color: order.isDelivered ? Colors.green[50] : Colors.green[100],
         margin: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 2),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -71,6 +72,12 @@ class OrderWidget extends StatelessWidget {
                   Text(
                     'Ordered: ${DateFormatter.timeAgoSinceDate(order.orderTime)}',
                     style: TextStyle(color: Colors.black54),
+                  ),
+                  Text(
+                    'Status: ${order.isDelivered ? 'Delivered' : 'Pending...'}',
+                    style: TextStyle(
+                      color: order.isDelivered ? Colors.green : Colors.red,
+                    ),
                   ),
                 ],
               ),

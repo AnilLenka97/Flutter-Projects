@@ -5,10 +5,12 @@ module.exports = {
     node: true,
   },
   extends: [
-    "eslint:recommended",
-    "google",
+    'eslint:recommended',
+    'google',
   ],
   rules: {
-    quotes: ["error", "double"],
+    // quote: ['error', 'double'],
+    'max-len': ['error', {'code': 180}],
+    'require-jsdoc': 0,
   },
 };

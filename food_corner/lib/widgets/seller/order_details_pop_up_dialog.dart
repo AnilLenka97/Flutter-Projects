@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:food_corner/models/food_item_model.dart';
-import 'package:food_corner/models/order_model.dart';
-import 'package:food_corner/models/user_model.dart';
-import 'package:food_corner/services/firebase_api.dart';
-import 'package:food_corner/utilities/date_formatter.dart';
-import 'package:food_corner/widgets/spinner_widget.dart';
+import 'package:food_corner/services/firebase_functions.dart';
+import '../../models/food_item_model.dart';
+import '../../models/order_model.dart';
+import '../../models/user_model.dart';
+import '../../services/firebase_api.dart';
+import '../../utilities/date_formatter.dart';
+import '../../widgets/spinner_widget.dart';
 
 class OrderDialog extends StatefulWidget {
-  final FoodItemModel foodItemModel;
-  final UserModel userModel;
-  final OrderModel orderModel;
+  final FoodItemModel foodItem;
+  final UserModel user;
+  final OrderModel order;
 
   const OrderDialog({
-    this.foodItemModel,
-    this.userModel,
-    this.orderModel,
+    this.foodItem,
+    this.user,
+    this.order,
   });
 
   @override
@@ -31,9 +32,22 @@ class _OrderDialogState extends State<OrderDialog> {
     setState(() {
       _isLoading = true;
     });
-    bool result = await _firebaseApi.updateOrderDelivery(
-      orderId: widget.orderModel.orderId,
+
+    // update order delivery confirmation
+    bool result = await _firebaseApi.confirmOrderDelivery(
+      order: widget.order,
     );
+
+    // call firebase fuction to send order confirmation push notification to user
+    if (result)
+      FirebaseCloudFunctions.callOrderDeliveryPushNotification(
+        {
+          'consumerId': widget.order.consumerId,
+          'foodItemId': widget.order.foodItemId,
+          'noOfItems': widget.order.noOfItems,
+        },
+      );
+
     if (!mounted) return;
     setState(() {
       _isLoading = false;
@@ -43,7 +57,7 @@ class _OrderDialogState extends State<OrderDialog> {
 
   @override
   void initState() {
-    _isDelivered = widget.orderModel.isDelivered;
+    _isDelivered = widget.order.isDelivered;
     super.initState();
   }
 
@@ -69,7 +83,7 @@ class _OrderDialogState extends State<OrderDialog> {
                     topRight: Radius.circular(10.0),
                   ),
                   child: Image.network(
-                    widget.foodItemModel.foodImgPath,
+                    widget.foodItem.foodImgPath,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -90,7 +104,7 @@ class _OrderDialogState extends State<OrderDialog> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.foodItemModel.foodTitle,
+                          widget.foodItem.foodTitle,
                           style: TextStyle(
                             fontSize: 25,
                             color: Colors.white,
@@ -99,7 +113,7 @@ class _OrderDialogState extends State<OrderDialog> {
                           overflow: TextOverflow.fade,
                         ),
                         Text(
-                          '₹ ${widget.foodItemModel.foodPrice}',
+                          '₹ ${widget.foodItem.foodPrice}',
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.white,
@@ -138,10 +152,10 @@ class _OrderDialogState extends State<OrderDialog> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Total Price: ₹${widget.foodItemModel.foodPrice * widget.orderModel.noOfItems}',
+                              'Total Price: ₹${widget.foodItem.foodPrice * widget.order.noOfItems}',
                             ),
                             Text(
-                              'Order Time: ${DateFormatter.timeAgoSinceDate(widget.orderModel.orderTime)}',
+                              'Order Time: ${DateFormatter.timeAgoSinceDate(widget.order.orderTime)}',
                             ),
                             Row(
                               children: [
@@ -186,16 +200,16 @@ class _OrderDialogState extends State<OrderDialog> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.userModel.userName,
+                              widget.user.userName,
                             ),
                             Text(
-                              'Email - ${widget.userModel.userEmail}',
+                              'Email - ${widget.user.userEmail}',
                             ),
                             Text(
-                              'Floor - ${widget.userModel.userFloorNo}',
+                              'Floor - ${widget.user.userFloorNo}',
                             ),
                             Text(
-                              'Cubicle No - ${widget.userModel.userCubicleNo.toString()}',
+                              'Cubicle No - ${widget.user.userCubicleNo.toString()}',
                             ),
                           ],
                         ),

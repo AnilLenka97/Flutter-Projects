@@ -1,5 +1,6 @@
 class OrderModel {
   final String orderId;
+  final String consumerOrderId;
   final String foodItemId;
   final String consumerId;
   final int noOfItems;
@@ -8,6 +9,7 @@ class OrderModel {
 
   OrderModel({
     this.orderId,
+    this.consumerOrderId,
     this.foodItemId,
     this.consumerId,
     this.noOfItems,

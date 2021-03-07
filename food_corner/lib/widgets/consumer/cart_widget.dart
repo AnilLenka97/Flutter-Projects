@@ -1,6 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../services/firebase_api.dart';
 import '../../models/food_item_model.dart';
 
 class CartWidget extends StatefulWidget {
@@ -15,30 +14,17 @@ class CartWidget extends StatefulWidget {
 }
 
 class _CartWidgetState extends State<CartWidget> {
-  final _userId = FirebaseAuth.instance.currentUser.uid;
-  final CollectionReference _users =
-      FirebaseFirestore.instance.collection('users');
+  final FirebaseApi _firebaseApi = FirebaseApi();
 
-  void changeNoOfItemsInCart(int val) {
-    _users
-        .doc(_userId)
-        .collection('cart-items')
-        .doc(widget.foodItem.foodItemId)
-        .set({
-          'noOfItems': val,
-        })
-        .then((value) => print("Item Added to Cart"))
-        .catchError((error) => print("Failed to add item to Cart: $error"));
+  updateNoOfItemsInCart(int noOfItems) async {
+    await _firebaseApi.updateNoOfItemsInCart(
+      noOfItems: noOfItems,
+      foodItemId: widget.foodItem.foodItemId,
+    );
   }
 
-  void removeItemFromCart() {
-    _users
-        .doc(_userId)
-        .collection('cart-items')
-        .doc(widget.foodItem.foodItemId)
-        .delete()
-        .then((value) => print("Food item Deleted"))
-        .catchError((error) => print("Failed to delete the item: $error"));
+  removeItemFromCart() async {
+    await _firebaseApi.deleteItemFromCart(widget.foodItem.foodItemId);
   }
 
   @override
@@ -103,9 +89,9 @@ class _CartWidgetState extends State<CartWidget> {
                     children: [
                       RawMaterialButton(
                         onPressed: () {
-                          int val = widget.noOfItems - 1;
-                          if (val >= 1) {
-                            changeNoOfItemsInCart(val);
+                          int noOfItems = widget.noOfItems - 1;
+                          if (noOfItems >= 1) {
+                            updateNoOfItemsInCart(noOfItems);
                           } else {
                             final snackBar = SnackBar(
                               elevation: 5,
@@ -149,9 +135,9 @@ class _CartWidgetState extends State<CartWidget> {
                       ),
                       RawMaterialButton(
                         onPressed: () {
-                          int val = widget.noOfItems + 1;
-                          if (val <= 5) {
-                            changeNoOfItemsInCart(val);
+                          int noOfItems = widget.noOfItems + 1;
+                          if (noOfItems <= 5) {
+                            updateNoOfItemsInCart(noOfItems);
                           } else {
                             final snackBar = SnackBar(
                               content: Text(

@@ -1,5 +1,5 @@
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
+import '../../services/firebase_functions.dart';
 import '../../models/user_model.dart';
 import '../../services/firebase_api.dart';
 import '../../widgets/spinner_widget.dart';
@@ -16,19 +16,13 @@ class UserWidget extends StatefulWidget {
 }
 
 class _UserWidgetState extends State<UserWidget> {
-  final _firebaseFunction = FirebaseFunctions.instance;
   final FirebaseApi _firebaseApi = FirebaseApi();
   bool _isDeleting = false;
 
   deleteUser(uid) async {
     var response;
     try {
-      response = await _firebaseFunction
-          .httpsCallable('deleteUser')
-          .call(uid)
-          .catchError((err) {
-        print('Error: $err');
-      });
+      response = await FirebaseCloudFunctions.callDeleteUser(uid);
       if (response.data) {
         await _firebaseApi.deleteUserData(userId: uid);
         print("Deleted Successfully!");

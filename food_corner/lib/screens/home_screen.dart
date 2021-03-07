@@ -48,14 +48,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    initializeLocalAuthentication();
+    // initializeLocalAuthentication();
     initializeHomeScreen();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading || !isAuthenticationSuccessful)
+    // if (_isLoading || !isAuthenticationSuccessful)
+    if (_isLoading)
       return Scaffold(
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
