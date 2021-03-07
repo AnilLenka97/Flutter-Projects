@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:food_corner/screens/chat_screen.dart';
 import './screens/seller/food_setting_screen.dart';
 import 'package:flutter/material.dart';
 import './services/local_auth.dart';
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
         AdminHomeScreen.id: (context) => AdminHomeScreen(),
         SellerHomeScreen.id: (context) => SellerHomeScreen(),
         FoodSettingScreen.id: (context) => FoodSettingScreen(),
+        ChatScreen.id: (context) => ChatScreen(),
       },
     );
   }
