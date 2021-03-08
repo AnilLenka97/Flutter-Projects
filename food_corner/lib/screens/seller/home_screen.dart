@@ -45,6 +45,10 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
           if (orderSnapshot.connectionState == ConnectionState.waiting)
             return Spinner();
           final customerOrders = orderSnapshot.data.docs;
+          if (customerOrders.length == 0)
+            return Center(
+              child: Text('No order received!'),
+            );
           return ListView.builder(
             itemCount: customerOrders.length,
             itemBuilder: (context, index) {

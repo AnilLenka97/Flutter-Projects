@@ -16,6 +16,7 @@ class CartWidget extends StatefulWidget {
 class _CartWidgetState extends State<CartWidget> {
   final FirebaseApi _firebaseApi = FirebaseApi();
 
+  // update no of items present for the particular food item
   updateNoOfItemsInCart(int noOfItems) async {
     await _firebaseApi.updateNoOfItemsInCart(
       noOfItems: noOfItems,
@@ -23,6 +24,7 @@ class _CartWidgetState extends State<CartWidget> {
     );
   }
 
+  // remove food item from cart
   removeItemFromCart() async {
     await _firebaseApi.deleteItemFromCart(widget.foodItem.foodItemId);
   }

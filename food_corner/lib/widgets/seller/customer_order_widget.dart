@@ -3,9 +3,7 @@ import '../../models/order_model.dart';
 import '../../utilities/date_formatter.dart';
 import '../../widgets/seller/order_details_pop_up_dialog.dart';
 import '../../services/firebase_api.dart';
-import '../../widgets/spinner_widget.dart';
 import '../../models/food_item_model.dart';
-import '../../models/user_model.dart';
 
 class CustomerOrderWidget extends StatefulWidget {
   final OrderModel order;
@@ -20,13 +18,10 @@ class CustomerOrderWidget extends StatefulWidget {
 class _CustomerOrderWidgetState extends State<CustomerOrderWidget> {
   FirebaseApi _firebaseApi = FirebaseApi();
   bool _isLoading = true;
-  UserModel user;
   FoodItemModel foodItem;
 
+  // get food details
   getRequiredData() async {
-    user = await _firebaseApi.getUserInfo(
-      userId: widget.order.consumerId,
-    );
     foodItem = await _firebaseApi.getFoodItemInfo(
       foodItemId: widget.order.foodItemId,
     );
@@ -44,15 +39,15 @@ class _CustomerOrderWidgetState extends State<CustomerOrderWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) return Spinner();
+    if (_isLoading) return Container();
     return InkWell(
       onTap: () {
         showDialog(
           context: context,
           builder: (context) => OrderDialog(
             order: widget.order,
-            user: user,
             foodItem: foodItem,
+            consumerOrSellerId: widget.order.consumerId,
           ),
         );
       },

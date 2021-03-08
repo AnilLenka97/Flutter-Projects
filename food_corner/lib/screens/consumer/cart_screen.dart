@@ -24,10 +24,12 @@ class _CartScreenState extends State<CartScreen> {
   void initiateOrders() async {
     int index = 0;
     for (var cartItem in cartData) {
+      // oder details added to consumer order history
       String newOrderId = await _firebaseApi.addItemToOrderHistory(
         noOfItems: cartItem['noOfItems'],
         foodItemId: cartItem.id,
       );
+      // oder details added to seller order received list
       if (newOrderId.isNotEmpty)
         await _firebaseApi.addOrderToSellerOrderList(
           orderModel: OrderModel(
@@ -37,6 +39,7 @@ class _CartScreenState extends State<CartScreen> {
           ),
           sellerId: sellerIdList[index++],
         );
+      // food item deletes after order placed
       await _firebaseApi.deleteItemFromCart(cartItem.id);
     }
     Navigator.pop(context);

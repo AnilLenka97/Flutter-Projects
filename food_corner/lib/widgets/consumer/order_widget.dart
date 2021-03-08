@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:food_corner/models/food_item_model.dart';
-import 'package:food_corner/models/order_model.dart';
-import 'package:food_corner/screens/chat_screen.dart';
+import '../../models/food_item_model.dart';
+import '../../models/order_model.dart';
+import '../../screens/chat_screen.dart';
 import '../../utilities/date_formatter.dart';
 
 class OrderWidget extends StatelessWidget {
@@ -17,34 +17,35 @@ class OrderWidget extends StatelessWidget {
       onTap: () {
         Navigator.pushNamed(context, ChatScreen.id);
       },
-      child: Container(
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          elevation: 7,
-          color: order.isDelivered ? Colors.green[50] : Colors.green[100],
-          margin: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 2),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            children: [
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(10.0),
-                    bottomLeft: Radius.circular(10.0),
-                  ),
-                  child: Image.network(
-                    foodItem.foodImgPath,
-                    height: 150,
-                    fit: BoxFit.cover,
-                  ),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        elevation: 7,
+        color: order.isDelivered ? Colors.green[50] : Colors.green[100],
+        margin: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 2),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                  bottomLeft: Radius.circular(10.0),
+                ),
+                child: Image.network(
+                  foodItem.foodImgPath,
+                  height: 110.0,
+                  fit: BoxFit.cover,
                 ),
               ),
-              SizedBox(
-                width: 10,
-              ),
-              Expanded(
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -86,11 +87,11 @@ class OrderWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(
-                width: 10,
-              ),
-            ],
-          ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+          ],
         ),
       ),
     );

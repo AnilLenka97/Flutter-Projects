@@ -268,4 +268,31 @@ class FirebaseApi {
     }).catchError((error) => print("Failed to update Order Delivery: $error"));
     return result;
   }
+
+  // get chat snapshots
+  getChatSnapshots(String consumerId, String sellerId) {
+    return cloudDb
+        .collection('users/$consumerId/chat-data/$sellerId/chats')
+        .orderBy(
+          'messageTime',
+          descending: true,
+        )
+        .snapshots();
+  }
+
+  // send message to user/seller
+  addNewMessage({
+    String message,
+    String userId,
+    String sellerId,
+  }) {
+    cloudDb
+        .collection('users/$userId/chat-data/$sellerId/chats')
+        .add({
+          'message': message,
+          'messageTime': Timestamp.now(),
+        })
+        .then((_) => print("Message sent Successfully!"))
+        .catchError((error) => print("Failed to send the message: $error"));
+  }
 }
