@@ -67,7 +67,7 @@ class OrderWidget extends StatelessWidget {
                       overflow: TextOverflow.fade,
                     ),
                     Text(
-                      '₹ ${foodItem.foodPrice * order.noOfItems}',
+                      '₹ ${order.price * order.noOfItems}',
                       style: TextStyle(
                         color: Colors.green,
                         fontSize: 22,

@@ -59,6 +59,7 @@ class OrderScreen extends StatelessWidget {
                   ),
                   order: OrderModel(
                     isDelivered: orderedFoodDocs[index]['isDelivered'],
+                    price: orderedFoodDocs[index]['price'],
                     noOfItems: orderedFoodDocs[index]['noOfItems'],
                     orderTime: orderedFoodDocs[index]['orderTime'].toDate(),
                   ),

@@ -58,6 +58,7 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
                   consumerOrderId: customerOrders[index]['consumerOrderId'],
                   consumerId: customerOrders[index]['consumerId'],
                   foodItemId: customerOrders[index]['foodItemId'],
+                  price: customerOrders[index]['price'],
                   noOfItems: customerOrders[index]['noOfItems'],
                   isDelivered: customerOrders[index]['isDelivered'],
                   orderTime: customerOrders[index]['orderTime'].toDate(),

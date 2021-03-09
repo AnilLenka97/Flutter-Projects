@@ -113,6 +113,7 @@ class FirebaseApi {
   addItemToOrderHistory({
     String foodItemId,
     int noOfItems,
+    int price,
   }) async {
     String orderId;
     await cloudDb
@@ -121,6 +122,7 @@ class FirebaseApi {
         .collection('order-history')
         .add({
       'foodItemId': foodItemId,
+      'price': price,
       'noOfItems': noOfItems,
       'isDelivered': false,
       'orderTime': Timestamp.now(),
@@ -145,6 +147,7 @@ class FirebaseApi {
           'consumerOrderId': orderModel.consumerOrderId,
           'foodItemId': orderModel.foodItemId,
           'isDelivered': false,
+          'price': orderModel.price,
           'noOfItems': orderModel.noOfItems,
           'orderTime': Timestamp.now(),
         })

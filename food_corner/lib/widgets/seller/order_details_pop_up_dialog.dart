@@ -133,7 +133,7 @@ class _OrderDialogState extends State<OrderDialog> {
                                 overflow: TextOverflow.fade,
                               ),
                               Text(
-                                '₹ ${widget.foodItem.foodPrice}',
+                                '₹ ${widget.order.price}',
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: Colors.white,
@@ -172,7 +172,7 @@ class _OrderDialogState extends State<OrderDialog> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Total Price: ₹${widget.foodItem.foodPrice * widget.order.noOfItems}',
+                                    'Total Price: ₹${widget.order.price * widget.order.noOfItems}',
                                   ),
                                   Text(
                                     'Order Time: ${DateFormatter.timeAgoSinceDate(widget.order.orderTime)}',
