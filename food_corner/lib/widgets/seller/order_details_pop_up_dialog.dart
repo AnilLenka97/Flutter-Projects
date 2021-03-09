@@ -156,7 +156,7 @@ class _OrderDialogState extends State<OrderDialog> {
                             Expanded(
                               flex: 1,
                               child: Text(
-                                'Order Details:',
+                                'Order Details',
                                 style: TextStyle(
                                   fontSize: 17.0,
                                   fontWeight: FontWeight.bold,
@@ -206,7 +206,9 @@ class _OrderDialogState extends State<OrderDialog> {
                             Expanded(
                               flex: 1,
                               child: Text(
-                                'Consumer Details: ',
+                                currentUser.userRole == 'seller'
+                                    ? 'Consumer Details'
+                                    : 'Seller Details',
                                 style: TextStyle(
                                   fontSize: 17.0,
                                   fontWeight: FontWeight.bold,
