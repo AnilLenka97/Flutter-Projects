@@ -18,9 +18,7 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   FirebaseApi _firebaseApi = FirebaseApi();
   var cartData;
-  List<String> _sellerIdList;
-  List<int> _foodPriceList;
-
+  var cartFoodItemList;
   //adding order data to both user and seller database
   void initiateOrders() async {
     int index = 0;
@@ -29,7 +27,7 @@ class _CartScreenState extends State<CartScreen> {
       String newOrderId = await _firebaseApi.addItemToOrderHistory(
         noOfItems: cartItem['noOfItems'],
         foodItemId: cartItem.id,
-        price: _foodPriceList[index],
+        price: cartFoodItemList[index]['price'],
       );
       // oder details added to seller order received list
       if (newOrderId.isNotEmpty)
@@ -37,15 +35,16 @@ class _CartScreenState extends State<CartScreen> {
           orderModel: OrderModel(
             foodItemId: cartItem.id,
             consumerOrderId: newOrderId,
-            price: _foodPriceList[index],
+            price: cartFoodItemList[index]['price'],
             noOfItems: cartItem['noOfItems'],
           ),
-          sellerId: _sellerIdList[index],
+          sellerId: cartFoodItemList[index]['sellerId'],
         );
-      // food item deletes after order placed
-      await _firebaseApi.deleteItemFromCart(cartItem.id);
       index += 1;
     }
+    // food item deletes after order placed
+    for (var cartItem in cartData)
+      await _firebaseApi.deleteItemFromCart(cartItem.id);
     Navigator.pop(context);
     showDialog(
       context: context,
@@ -93,21 +92,10 @@ class _CartScreenState extends State<CartScreen> {
                 return Spinner();
               final foodItemDocs = foodItemSnapshots.data.docs;
               var cartList = [];
-              List<int> cartItemNumberList = [];
-              List<String> sellerIdList = [];
-              List<int> foodPriceList = [];
-              for (var cartItem in cartFoodDocs) {
-                for (var foodItem in foodItemDocs) {
-                  if (cartItem.id == foodItem.id) {
-                    cartItemNumberList.add(cartItem['noOfItems']);
-                    foodPriceList.add(foodItem['price']);
-                    sellerIdList.add(foodItem['sellerId']);
-                    cartList.add(foodItem);
-                  }
-                }
-              }
-              _sellerIdList = sellerIdList;
-              _foodPriceList = foodPriceList;
+              for (var cartItem in cartFoodDocs)
+                for (var foodItem in foodItemDocs)
+                  if (cartItem.id == foodItem.id) cartList.add(foodItem);
+              cartFoodItemList = cartList;
               return ListView.builder(
                 itemCount: cartList.length,
                 itemBuilder: (ctx, index) => CartWidget(
@@ -117,7 +105,7 @@ class _CartScreenState extends State<CartScreen> {
                     foodImgPath: cartList[index]['imgPath'],
                     foodPrice: cartList[index]['price'],
                   ),
-                  noOfItems: cartItemNumberList[index],
+                  noOfItems: cartFoodDocs[index]['noOfItems'],
                 ),
               );
             },
