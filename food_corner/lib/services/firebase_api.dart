@@ -290,6 +290,7 @@ class FirebaseApi {
         .collection('users/$userId/chat-data/$sellerId/chats')
         .add({
           'message': message,
+          'senderId': user.uid,
           'messageTime': Timestamp.now(),
         })
         .then((_) => print("Message sent Successfully!"))

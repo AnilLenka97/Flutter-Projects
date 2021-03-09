@@ -55,6 +55,7 @@ class OrderScreen extends StatelessWidget {
                     foodTitle: orderedFoodItemList[index]['title'],
                     foodImgPath: orderedFoodItemList[index]['imgPath'],
                     foodPrice: orderedFoodItemList[index]['price'],
+                    sellerId: orderedFoodItemList[index]['sellerId'],
                   ),
                   order: OrderModel(
                     isDelivered: orderedFoodDocs[index]['isDelivered'],

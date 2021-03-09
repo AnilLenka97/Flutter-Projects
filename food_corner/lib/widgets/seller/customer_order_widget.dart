@@ -47,7 +47,6 @@ class _CustomerOrderWidgetState extends State<CustomerOrderWidget> {
           builder: (context) => OrderDialog(
             order: widget.order,
             foodItem: foodItem,
-            consumerOrSellerId: widget.order.consumerId,
           ),
         );
       },

@@ -11,12 +11,10 @@ import '../../widgets/spinner_widget.dart';
 class OrderDialog extends StatefulWidget {
   final OrderModel order;
   final FoodItemModel foodItem;
-  final String consumerOrSellerId;
 
   const OrderDialog({
     this.order,
     this.foodItem,
-    this.consumerOrSellerId,
   });
 
   @override
@@ -30,12 +28,15 @@ class _OrderDialogState extends State<OrderDialog> {
   bool _isUpdating = false;
   bool _isLoading = true;
   UserModel user;
-  FoodItemModel foodItem;
+  UserModel currentUser;
 
-  // get user/consumer details
+  // get current user and user/consumer details
   getRequiredData() async {
+    currentUser = await _firebaseApi.getUserInfo();
     user = await _firebaseApi.getUserInfo(
-      userId: widget.consumerOrSellerId,
+      userId: currentUser.userRole == 'seller'
+          ? widget.order.consumerId
+          : widget.foodItem.sellerId,
     );
     if (!mounted) return;
     setState(() {
@@ -58,7 +59,7 @@ class _OrderDialogState extends State<OrderDialog> {
       FirebaseCloudFunctions.callOrderDeliveryPushNotification(
         {
           'consumerId':
-              user.userRole == 'seller' ? widget.order.consumerId : '',
+              currentUser.userRole == 'seller' ? widget.order.consumerId : '',
           'foodItemId': widget.order.foodItemId,
           'noOfItems': widget.order.noOfItems,
         },
@@ -73,7 +74,6 @@ class _OrderDialogState extends State<OrderDialog> {
 
   @override
   void initState() {
-    foodItem = widget.foodItem;
     _isDelivered = widget.order.isDelivered;
     getRequiredData();
     super.initState();
@@ -103,7 +103,7 @@ class _OrderDialogState extends State<OrderDialog> {
                           topRight: Radius.circular(10.0),
                         ),
                         child: Image.network(
-                          foodItem.foodImgPath,
+                          widget.foodItem.foodImgPath,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -124,7 +124,7 @@ class _OrderDialogState extends State<OrderDialog> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                foodItem.foodTitle,
+                                widget.foodItem.foodTitle,
                                 style: TextStyle(
                                   fontSize: 25,
                                   color: Colors.white,
@@ -133,7 +133,7 @@ class _OrderDialogState extends State<OrderDialog> {
                                 overflow: TextOverflow.fade,
                               ),
                               Text(
-                                '₹ ${foodItem.foodPrice}',
+                                '₹ ${widget.foodItem.foodPrice}',
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: Colors.white,
@@ -172,7 +172,7 @@ class _OrderDialogState extends State<OrderDialog> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Total Price: ₹${foodItem.foodPrice * widget.order.noOfItems}',
+                                    'Total Price: ₹${widget.foodItem.foodPrice * widget.order.noOfItems}',
                                   ),
                                   Text(
                                     'Order Time: ${DateFormatter.timeAgoSinceDate(widget.order.orderTime)}',
@@ -265,6 +265,7 @@ class _OrderDialogState extends State<OrderDialog> {
                                       builder: (context) => ChatScreen(
                                         user: user,
                                         order: widget.order,
+                                        currentUser: currentUser,
                                       ),
                                     ),
                                   );
@@ -273,18 +274,19 @@ class _OrderDialogState extends State<OrderDialog> {
                               SizedBox(
                                 width: 10.0,
                               ),
-                              if (!_isDelivered)
-                                RaisedButton(
-                                  elevation: 5.0,
-                                  color: Theme.of(context).primaryColor,
-                                  textColor: Colors.white,
-                                  child: Text(
-                                    'Deliver Now',
+                              if (currentUser.userRole == 'seller')
+                                if (!_isDelivered)
+                                  RaisedButton(
+                                    elevation: 5.0,
+                                    color: Theme.of(context).primaryColor,
+                                    textColor: Colors.white,
+                                    child: Text(
+                                      'Deliver Now',
+                                    ),
+                                    onPressed: () {
+                                      deliverOrder();
+                                    },
                                   ),
-                                  onPressed: () {
-                                    deliverOrder();
-                                  },
-                                ),
                               if (!_isDelivered)
                                 SizedBox(
                                   width: 10.0,

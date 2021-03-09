@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_corner/widgets/seller/order_details_pop_up_dialog.dart';
 import '../../models/food_item_model.dart';
 import '../../models/order_model.dart';
 import '../../screens/chat_screen.dart';
@@ -15,7 +16,13 @@ class OrderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, ChatScreen.id);
+        showDialog(
+          context: context,
+          builder: (context) => OrderDialog(
+            order: order,
+            foodItem: foodItem,
+          ),
+        );
       },
       child: Card(
         shape: RoundedRectangleBorder(
