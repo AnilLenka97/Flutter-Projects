@@ -6,10 +6,12 @@ import '../../models/food_item_model.dart';
 class FoodItemWidget extends StatefulWidget {
   final FoodItemModel foodItem;
   final bool isItemAddedToCart;
+  final Function refreshCartItemsFn;
 
   FoodItemWidget({
     @required this.foodItem,
     @required this.isItemAddedToCart,
+    @required this.refreshCartItemsFn,
   });
   @override
   _FoodItemWidgetState createState() => _FoodItemWidgetState();
@@ -140,6 +142,7 @@ class _FoodItemWidgetState extends State<FoodItemWidget> {
                   ? null
                   : () {
                       addFoodItemToCart(widget.foodItem.foodItemId);
+                      widget.refreshCartItemsFn(widget.foodItem.foodItemId);
                       setState(() {
                         _isAddedToCart = true;
                         _isClicked = true;

@@ -1,7 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
-import 'package:food_corner/models/food_item_model.dart';
+import '../../models/food_item_model.dart';
 import '../../models/user_model.dart';
 import '../../services/push_notification_handler.dart';
 import '../../services/firebase_api.dart';
@@ -28,11 +28,36 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
 
   final List<Map<String, dynamic>> _foodItemList = [];
   var cartItemsSnaps;
-  final int documentLimit = 3;
+  int cartCount = 0;
+  final int documentLimit = 5;
   bool _hasNext = true;
   bool _isFetchingData = false;
   bool _isLoading = true;
   bool _isCartItemsAccessedFirstTime = false;
+
+  // update ui when an item added to cart
+  updateFoodItemListInUI(String foodItemId) {
+    for (Map foodItemMap in _foodItemList)
+      if (foodItemMap['foodItem'].id == foodItemId)
+        foodItemMap['isItemAddedToCart'] = true;
+  }
+
+  // delete unavailable items from cart
+  deleteUnavailableItemsFromCart() async {
+    List<String> availFoodItemIdList = [];
+    final availableFoodItemSnaps =
+        await _firebaseApi.getFoodItems(getAvailableItem: true);
+
+    for (var availableFoodItem in availableFoodItemSnaps.docs)
+      availFoodItemIdList.add(availableFoodItem.id);
+
+    await getCartItems();
+
+    if (cartItemsSnaps.docs.length != 0)
+      for (var cartItem in cartItemsSnaps.docs)
+        if (!availFoodItemIdList.contains(cartItem.id))
+          await _firebaseApi.deleteItemFromCart(cartItem.id);
+  }
 
   // get food items from data base
   getFoodItems() async {
@@ -67,8 +92,16 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
   // get cart items
   getCartItems() async {
     cartItemsSnaps = await _firebaseApi.getCartItems();
+    setState(() {
+      cartCount = cartItemsSnaps.docs.length;
+    });
     if (!_isCartItemsAccessedFirstTime) getFoodItems();
     _isCartItemsAccessedFirstTime = true;
+  }
+
+  refreshCartItems(String foodItemId) {
+    getCartItems();
+    updateFoodItemListInUI(foodItemId);
   }
 
   // Scroll listener used to load next few Items when the user reach to the end of the doc
@@ -87,7 +120,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
     PushNotificationHandler pushNotificationHandler =
         PushNotificationHandler(context: context);
     pushNotificationHandler.pushNotificationConfigure();
-    getCartItems();
+    deleteUnavailableItemsFromCart();
     _scrollController.addListener(scrollListener);
     super.initState();
   }
@@ -122,16 +155,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                 Navigator.pushNamed(context, CartScreen.id);
               },
             ),
-            badgeContent: StreamBuilder(
-              stream: _firebaseApi.getCartItemSnapshots(),
-              builder: (ctx, cartItemSnapshot) {
-                return Text(
-                  cartItemSnapshot.hasData
-                      ? cartItemSnapshot.data.docs.length.toString()
-                      : '',
-                );
-              },
-            ),
+            badgeContent: Text(cartCount.toString()),
           ),
         ],
       ),
@@ -143,6 +167,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
       ),
       body: ListView(
         controller: _scrollController,
+        addAutomaticKeepAlives: true,
         children: [
           ..._foodItemList
               .map(
@@ -154,6 +179,7 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
                     foodPrice: foodItemMap['foodItem']['price'],
                   ),
                   isItemAddedToCart: foodItemMap['isItemAddedToCart'],
+                  refreshCartItemsFn: refreshCartItems,
                 ),
               )
               .toList(),
@@ -165,23 +191,6 @@ class _ConsumerHomeScreenState extends State<ConsumerHomeScreen> {
             ),
         ],
       ),
-
-      // disable 'add to cart' buttons if item is already added to cart
-      //     for (var cartItem in cartItemDocs) {
-      //       cartItemIdList.add(cartItem.id);
-      //     }
-      //
-      // show only available food items
-      // for (var foodItem in foodDocs) {
-      //   // if (foodItem['isAvailable'])
-      //     // availableFoodItemList.add(foodItem);
-      //
-      //   // delete cartItem from cart which is not available
-      //   for (var cartItem in cartItemDocs) {
-      //     if (cartItem.id == foodItem.id && !foodItem['isAvailable'])
-      //       _firebaseApi.deleteItemFromCart(foodItem.id);
-      //   }
-      // }
     );
   }
 }
