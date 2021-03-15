@@ -11,12 +11,12 @@ class ChatScreen extends StatefulWidget {
   final UserModel currentUser;
   final OrderModel order;
 
-  const ChatScreen(
-      {Key key,
-      @required this.user,
-      @required this.order,
-      @required this.currentUser})
-      : super(key: key);
+  const ChatScreen({
+    Key key,
+    @required this.user,
+    @required this.order,
+    @required this.currentUser,
+  }) : super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();

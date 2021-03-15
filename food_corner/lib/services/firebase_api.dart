@@ -79,6 +79,15 @@ class FirebaseApi {
         .snapshots();
   }
 
+  // get multiple cart items from firebase
+  Future getCartItems() async {
+    return await cloudDb
+        .collection('users')
+        .doc(user.uid)
+        .collection('cart-items')
+        .get();
+  }
+
 // update the no of items in cart section
   updateNoOfItemsInCart({
     int noOfItems,
@@ -179,8 +188,33 @@ class FirebaseApi {
         .snapshots();
   }
 
-  Stream<QuerySnapshot> getFoodItemSnapshots() {
-    return cloudDb.collection('food-items').snapshots();
+  // get multiple food items from firebase
+  Future getFoodItems({
+    int limit,
+    bool getAvailableItem = false,
+    var lastDocument,
+  }) async {
+    var foodItemsRef = await cloudDb.collection('food-items');
+    if (getAvailableItem)
+      foodItemsRef = foodItemsRef.where('isAvailable', isEqualTo: true);
+
+    if (lastDocument != null)
+      foodItemsRef = foodItemsRef.startAfterDocument(lastDocument);
+
+    if (limit != null) foodItemsRef = foodItemsRef.limit(limit);
+    return await foodItemsRef.get();
+  }
+
+  Stream<QuerySnapshot> getFoodItemSnapshots({
+    int limit,
+    bool getAvailableItem = false,
+  }) {
+    var foodItemsRef = cloudDb.collection('food-items');
+    if (getAvailableItem)
+      foodItemsRef = foodItemsRef.where('isAvailable', isEqualTo: true);
+
+    if (limit != null) foodItemsRef = foodItemsRef.limit(limit);
+    return foodItemsRef.snapshots();
   }
 
   getFoodItemInfo({String foodItemId}) async {
